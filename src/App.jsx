@@ -1,9 +1,4 @@
 import { useState, useEffect } from "react";
-import emailjs from "@emailjs/browser";
-
-const EMAILJS_SERVICE  = import.meta.env.VITE_EMAILJS_SERVICE;
-const EMAILJS_TEMPLATE = import.meta.env.VITE_EMAILJS_TEMPLATE;
-const EMAILJS_KEY      = import.meta.env.VITE_EMAILJS_KEY;
 
 const C = {
   primary: "#5B4FCF", primaryDark: "#4338CA", primaryLight: "#EEF0FF",
@@ -246,9 +241,7 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [accounts, setAccounts] = useState({});
 
-  const [authForm, setAuthForm] = useState({ name: "", email: "", password: "", confirmPw: "" });
-  const [otpSent, setOtpSent] = useState("");
-  const [otpInput, setOtpInput] = useState("");
+  const [authForm, setAuthForm] = useState({ name: "", pin: "", confirmPin: "" });
   const [secQ, setSecQ] = useState(0);
   const [secAns, setSecAns] = useState("");
   const [secAnsInput, setSecAnsInput] = useState("");
@@ -278,7 +271,6 @@ export default function App() {
   const [logSets, setLogSets] = useState("");
 
   const [reportExercise, setReportExercise] = useState(null);
-  const [otpLoading, setOtpLoading] = useState(false);
 
   useEffect(() => {
     const accs = storageGet("accounts");
@@ -288,23 +280,23 @@ export default function App() {
 
   useEffect(() => {
     if (!user) return;
-    const p = storageGet(`profile:${user.email}`);
+    const p = storageGet(`profile:${user.username}`);
     if (p) { setProfile(p); setProfileSaved(true); }
-    const d = storageGet(`daily:${user.email}:${today}`);
+    const d = storageGet(`daily:${user.username}:${today}`);
     if (d) setDailyData(d);
-    const h = storageGet(`exHistory:${user.email}`);
+    const h = storageGet(`exHistory:${user.username}`);
     if (h) setExHistory(h);
   }, [user]);
 
   useEffect(() => {
     if (user && Object.keys(dailyData).length > 0) {
-      storageSet(`daily:${user.email}:${today}`, dailyData);
+      storageSet(`daily:${user.username}:${today}`, dailyData);
     }
   }, [dailyData]);
 
   useEffect(() => {
     if (user && exHistory.length > 0) {
-      storageSet(`exHistory:${user.email}`, exHistory);
+      storageSet(`exHistory:${user.username}`, exHistory);
     }
   }, [exHistory]);
 
@@ -349,48 +341,32 @@ export default function App() {
     setFoodLoading(false);
   }
 
-  async function handleRegisterStep1() {
+  function handleRegisterStep1() {
     if (!authForm.name.trim()) { setAuthErr("Please enter your name"); return; }
-    if (!authForm.email.includes("@")) { setAuthErr("Please enter a valid email"); return; }
-    if (authForm.password.length < 6) { setAuthErr("Password must be 6+ characters"); return; }
-    if (authForm.password !== authForm.confirmPw) { setAuthErr("Passwords don't match"); return; }
-    if (accounts[authForm.email.toLowerCase()]) { setAuthErr("Email already registered. Please sign in."); return; }
-    const otp = genOTP();
-    setOtpSent(otp); setOtpInput(""); setAuthErr(""); setOtpLoading(true);
-    try {
-      await emailjs.send(
-        EMAILJS_SERVICE, EMAILJS_TEMPLATE,
-        { to_name: authForm.name, to_email: authForm.email, otp_code: otp },
-        EMAILJS_KEY
-      );
-      setScreen("otp");
-    } catch {
-      setAuthErr("Failed to send OTP email. Please check your email address and try again.");
-    }
-    setOtpLoading(false);
-  }
-  function handleOTPVerify() {
-    if (otpInput === otpSent) { setAuthErr(""); setScreen("secQ"); }
-    else setAuthErr("Incorrect OTP");
+    if (!/^\d{4}$/.test(authForm.pin)) { setAuthErr("PIN must be exactly 4 digits"); return; }
+    if (authForm.pin !== authForm.confirmPin) { setAuthErr("PINs don't match"); return; }
+    const username = authForm.name.toLowerCase().trim();
+    if (accounts[username]) { setAuthErr("Name already registered. Try a different name or sign in."); return; }
+    setAuthErr(""); setScreen("secQ");
   }
   function handleSecQSetup() {
     if (!secAns.trim()) { setAuthErr("Please answer the security question"); return; }
-    const email = authForm.email.toLowerCase();
-    const newUser = { name: authForm.name, email, password: authForm.password, secQ, secAns: secAns.toLowerCase().trim() };
-    const updated = { ...accounts, [email]: newUser };
+    const username = authForm.name.toLowerCase().trim();
+    const newUser = { name: authForm.name.trim(), username, pin: authForm.pin, secQ, secAns: secAns.toLowerCase().trim() };
+    const updated = { ...accounts, [username]: newUser };
     setAccounts(updated); storageSet("accounts", updated);
     setUser(newUser); setAuthErr(""); setScreen("dashboard");
     showToast("🎉 Account created! Welcome");
   }
   function handleLogin() {
-    const email = authForm.email.toLowerCase();
-    const acc = accounts[email];
-    if (!acc) { setAuthErr("No account found. Please sign up first."); return; }
-    if (acc.password !== authForm.password) { setAuthErr("Incorrect password"); return; }
+    const username = authForm.name.toLowerCase().trim();
+    const acc = accounts[username];
+    if (!acc) { setAuthErr("Name not found. Please sign up first."); return; }
+    if (acc.pin !== authForm.pin) { setAuthErr("Incorrect PIN"); return; }
     setSecQ(acc.secQ); setSecAnsInput(""); setAuthErr(""); setScreen("loginMFA");
   }
   function handleLoginMFA() {
-    const acc = accounts[authForm.email.toLowerCase()];
+    const acc = accounts[authForm.name.toLowerCase().trim()];
     if (secAnsInput.toLowerCase().trim() === acc.secAns) {
       setUser(acc); setAuthErr(""); setScreen("dashboard");
       showToast(`Welcome back, ${acc.name}! 🙏`);
@@ -399,13 +375,13 @@ export default function App() {
   function handleSignOut() {
     setUser(null); setProfile({ weight: "", height: "", age: "", goal: "lose", gender: "male" });
     setProfileSaved(false); setDailyData({}); setExHistory([]);
-    setAuthForm({ name: "", email: "", password: "", confirmPw: "" }); setScreen("login");
+    setAuthForm({ name: "", pin: "", confirmPin: "" }); setScreen("login");
     showToast("Signed out safely 👋");
   }
   function saveProfile() {
     if (!profile.weight || !profile.height || !profile.age) { showToast("⚠️ Please fill all fields"); return; }
     setProfileSaved(true);
-    storageSet(`profile:${user.email}`, profile);
+    storageSet(`profile:${user.username}`, profile);
     const newWeight = parseFloat(profile.weight);
     const wLog = weightLog.length === 0 || weightLog[weightLog.length - 1].weight !== newWeight ?
       [...weightLog, { date: today, weight: newWeight }] : weightLog;
@@ -529,27 +505,23 @@ export default function App() {
               <button key={s} style={{ ...S.pill(screen === s), flex: 1 }} onClick={() => { setScreen(s); setAuthErr(""); }}>{lbl}</button>
             ))}
           </div>
+          <span style={S.label}>Full Name</span>
+          <input style={S.input} placeholder="e.g. Manish Karki" value={authForm.name} onChange={e => setAuthForm(p => ({ ...p, name: e.target.value }))} />
+          <span style={S.label}>4-Digit PIN</span>
+          <input style={{ ...S.input, letterSpacing: 6, fontWeight: 700 }} type="password" inputMode="numeric" maxLength={4} placeholder="••••" value={authForm.pin} onChange={e => setAuthForm(p => ({ ...p, pin: e.target.value.replace(/\D/g, "").slice(0, 4) }))} />
           {isReg && <>
-            <span style={S.label}>Full Name</span>
-            <input style={S.input} placeholder="Aarav Sharma" value={authForm.name} onChange={e => setAuthForm(p => ({ ...p, name: e.target.value }))} />
-          </>}
-          <span style={S.label}>Email</span>
-          <input style={S.input} type="email" placeholder="you@email.com" value={authForm.email} onChange={e => setAuthForm(p => ({ ...p, email: e.target.value }))} />
-          <span style={S.label}>Password</span>
-          <input style={S.input} type="password" placeholder="6+ characters" value={authForm.password} onChange={e => setAuthForm(p => ({ ...p, password: e.target.value }))} />
-          {isReg && <>
-            <span style={S.label}>Confirm Password</span>
-            <input style={S.input} type="password" placeholder="Repeat password" value={authForm.confirmPw} onChange={e => setAuthForm(p => ({ ...p, confirmPw: e.target.value }))} />
+            <span style={S.label}>Confirm PIN</span>
+            <input style={{ ...S.input, letterSpacing: 6, fontWeight: 700 }} type="password" inputMode="numeric" maxLength={4} placeholder="••••" value={authForm.confirmPin} onChange={e => setAuthForm(p => ({ ...p, confirmPin: e.target.value.replace(/\D/g, "").slice(0, 4) }))} />
           </>}
           {authErr && <div style={S.err}>⚠️ {authErr}</div>}
-          <button style={{ ...S.btn(), marginTop: 16 }} onClick={isReg ? handleRegisterStep1 : handleLogin} disabled={otpLoading}>
-            {isReg ? (otpLoading ? "Sending code…" : "Continue → Verify Email") : "Sign In"}
+          <button style={{ ...S.btn(), marginTop: 16 }} onClick={isReg ? handleRegisterStep1 : handleLogin}>
+            {isReg ? "Continue → Security Setup" : "Sign In"}
           </button>
         </div>
         {isReg && (
           <div style={{ ...S.card, background: C.primaryLight, border: `1px solid #C5C0F5` }}>
-            <div style={{ fontSize: 12, color: C.primary, fontWeight: 700 }}>🔐 Multi-Factor Authentication</div>
-            <div style={{ fontSize: 12, color: C.muted, marginTop: 4, lineHeight: 1.5 }}>Sign-up uses email OTP + security question for extra account safety.</div>
+            <div style={{ fontSize: 12, color: C.primary, fontWeight: 700 }}>🔐 Two-Step Security</div>
+            <div style={{ fontSize: 12, color: C.muted, marginTop: 4, lineHeight: 1.5 }}>Sign-in uses your 4-digit PIN + a security question for extra account safety.</div>
           </div>
         )}
         {toast && <div style={S.toast}>{toast}</div>}
@@ -557,36 +529,12 @@ export default function App() {
     );
   }
 
-  if (screen === "otp") return (
-    <div style={S.wrap}>
-      <div style={{ ...S.header, justifyContent: "center", flexDirection: "column", textAlign: "center", padding: "24px 16px" }}>
-        <div style={{ fontSize: 34 }}>📧</div>
-        <div style={{ fontSize: 18, fontWeight: 700 }}>Verify Your Email</div>
-        <div style={{ fontSize: 12, opacity: 0.8 }}>Step 1 of 2</div>
-      </div>
-      <div style={S.card}>
-        <div style={{ fontSize: 13, color: C.muted, marginBottom: 12 }}>
-          A 6-digit code was sent to <b>{authForm.email}</b>. Check your inbox (and spam folder).
-        </div>
-        <div style={{ background: C.primaryLight, border: `1px solid ${C.primary}`, borderRadius: 8, padding: "10px 12px", fontSize: 12, color: C.primary, marginBottom: 12 }}>
-          📧 Enter the code from your email below
-        </div>
-        <span style={S.label}>Enter 6-digit code</span>
-        <input style={{ ...S.input, letterSpacing: 8, fontWeight: 700, fontSize: 22, textAlign: "center" }} maxLength={6} placeholder="------" value={otpInput} onChange={e => setOtpInput(e.target.value.replace(/\D/g, ""))} />
-        {authErr && <div style={S.err}>⚠️ {authErr}</div>}
-        <button style={{ ...S.btn(), marginTop: 14 }} onClick={handleOTPVerify}>Verify Code →</button>
-        <button style={{ ...S.btnOut, width: "100%", marginTop: 10, padding: "10px" }} onClick={() => setScreen("register")}>← Back</button>
-      </div>
-      {toast && <div style={S.toast}>{toast}</div>}
-    </div>
-  );
-
   if (screen === "secQ") return (
     <div style={S.wrap}>
       <div style={{ ...S.header, justifyContent: "center", flexDirection: "column", textAlign: "center", padding: "24px 16px" }}>
         <div style={{ fontSize: 34 }}>🔐</div>
         <div style={{ fontSize: 18, fontWeight: 700 }}>Security Setup</div>
-        <div style={{ fontSize: 12, opacity: 0.8 }}>Step 2 of 2</div>
+        <div style={{ fontSize: 12, opacity: 0.8 }}>One-time setup · protects your account</div>
       </div>
       <div style={S.card}>
         <div style={{ fontSize: 13, color: C.muted, marginBottom: 12 }}>You'll be asked this question on future logins.</div>
@@ -1047,7 +995,7 @@ export default function App() {
         <div style={S.card}>
           <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 14 }}>
             <div style={{ width: 54, height: 54, borderRadius: "50%", background: C.primary, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, color: "#fff", fontWeight: 800 }}>{user?.name?.[0]?.toUpperCase()}</div>
-            <div><div style={{ fontWeight: 800, fontSize: 17 }}>{user?.name}</div><div style={{ fontSize: 12, color: C.muted }}>{user?.email}</div></div>
+            <div><div style={{ fontWeight: 800, fontSize: 17 }}>{user?.name}</div><div style={{ fontSize: 12, color: C.muted }}>@{user?.username}</div></div>
           </div>
           {profileSaved && (
             <div style={{ display: "flex", gap: 6 }}>
