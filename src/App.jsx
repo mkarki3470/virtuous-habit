@@ -462,15 +462,15 @@ export default function App() {
   }
 
   const S = {
-    wrap: { fontFamily: "'Segoe UI', system-ui, sans-serif", background: C.bg, minHeight: "100vh", maxWidth: 480, margin: "0 auto", paddingBottom: 90, position: "relative" },
-    header: { background: C.primary, color: "#fff", padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 50 },
+    wrap: { fontFamily: "'Segoe UI', system-ui, sans-serif", background: C.bg, minHeight: "100vh", maxWidth: 480, margin: "0 auto", paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 90px)", position: "relative" },
+    header: { background: C.primary, color: "#fff", padding: "14px 16px", paddingTop: "calc(env(safe-area-inset-top, 0px) + 14px)", display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 50 },
     card: { background: C.card, borderRadius: 14, border: "0.5px solid #E2E0F5", padding: "14px 16px", margin: "10px 12px" },
     btn: (color = C.primary) => ({ background: color, color: "#fff", border: "none", borderRadius: 10, padding: "11px 20px", fontWeight: 600, cursor: "pointer", fontSize: 14, width: "100%" }),
     btnSm: (color = C.primary) => ({ background: color, color: "#fff", border: "none", borderRadius: 8, padding: "6px 14px", fontWeight: 600, cursor: "pointer", fontSize: 12 }),
     btnOut: { background: "transparent", color: C.primary, border: `1.5px solid ${C.primary}`, borderRadius: 8, padding: "6px 14px", fontWeight: 600, cursor: "pointer", fontSize: 12 },
     input: { width: "100%", border: "1px solid #D0CDF5", borderRadius: 10, padding: "11px 12px", fontSize: 14, boxSizing: "border-box", marginTop: 6, background: "#FAFAFE", outline: "none" },
     label: { fontSize: 12, color: C.muted, fontWeight: 500, marginTop: 10, display: "block" },
-    navBar: { position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 480, background: "#fff", borderTop: "0.5px solid #E2E0F5", display: "flex", justifyContent: "space-around", padding: "8px 0 10px", zIndex: 100, boxShadow: "0 -2px 10px rgba(0,0,0,0.04)" },
+    navBar: { position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 480, background: "#fff", borderTop: "0.5px solid #E2E0F5", display: "flex", justifyContent: "space-around", padding: "8px 0", paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 8px)", zIndex: 100, boxShadow: "0 -2px 10px rgba(0,0,0,0.04)" },
     navItem: (a) => ({ display: "flex", flexDirection: "column", alignItems: "center", cursor: "pointer", color: a ? C.primary : "#AAA", fontSize: 10, fontWeight: a ? 700 : 400, gap: 2, padding: "2px 8px" }),
     stat: { background: C.primaryLight, borderRadius: 10, padding: "10px 8px", textAlign: "center", flex: 1 },
     tag: (c) => ({ background: c + "22", color: c, fontSize: 11, borderRadius: 20, padding: "2px 10px", fontWeight: 600 }),
@@ -494,7 +494,7 @@ export default function App() {
     const isReg = screen === "register";
     return (
       <div style={S.wrap}>
-        <div style={{ ...S.header, flexDirection: "column", textAlign: "center", padding: "28px 16px 24px", gap: 6 }}>
+        <div style={{ ...S.header, flexDirection: "column", textAlign: "center", padding: "28px 16px 24px", paddingTop: "calc(env(safe-area-inset-top, 0px) + 28px)", gap: 6 }}>
           <SunriseIcon size={72} />
           <div style={{ fontSize: 26, fontWeight: 800, letterSpacing: -0.5, marginTop: 8 }}>My Sadbani</div>
           <div style={{ fontSize: 13, opacity: 0.85, fontStyle: "italic" }}>Build virtue, one habit at a time ✨</div>
@@ -531,7 +531,7 @@ export default function App() {
 
   if (screen === "secQ") return (
     <div style={S.wrap}>
-      <div style={{ ...S.header, justifyContent: "center", flexDirection: "column", textAlign: "center", padding: "24px 16px" }}>
+      <div style={{ ...S.header, justifyContent: "center", flexDirection: "column", textAlign: "center", padding: "24px 16px", paddingTop: "calc(env(safe-area-inset-top, 0px) + 24px)" }}>
         <div style={{ fontSize: 34 }}>🔐</div>
         <div style={{ fontSize: 18, fontWeight: 700 }}>Security Setup</div>
         <div style={{ fontSize: 12, opacity: 0.8 }}>One-time setup · protects your account</div>
@@ -553,7 +553,7 @@ export default function App() {
 
   if (screen === "loginMFA") return (
     <div style={S.wrap}>
-      <div style={{ ...S.header, justifyContent: "center", flexDirection: "column", textAlign: "center", padding: "24px 16px" }}>
+      <div style={{ ...S.header, justifyContent: "center", flexDirection: "column", textAlign: "center", padding: "24px 16px", paddingTop: "calc(env(safe-area-inset-top, 0px) + 24px)" }}>
         <div style={{ fontSize: 34 }}>🔐</div>
         <div style={{ fontSize: 18, fontWeight: 700 }}>Verify It's You</div>
         <div style={{ fontSize: 12, opacity: 0.8 }}>2-Factor Security</div>
@@ -571,7 +571,7 @@ export default function App() {
 
   if (screen === "onboarding") return (
     <div style={S.wrap}>
-      <div style={{ ...S.header, justifyContent: "center", flexDirection: "column", textAlign: "center", padding: "24px 16px" }}>
+      <div style={{ ...S.header, justifyContent: "center", flexDirection: "column", textAlign: "center", padding: "24px 16px", paddingTop: "calc(env(safe-area-inset-top, 0px) + 24px)" }}>
         <div style={{ fontSize: 18, fontWeight: 700 }}>Set Up Your Profile</div>
         <div style={{ fontSize: 12, opacity: 0.8 }}>Help us personalize your plan</div>
       </div>
@@ -617,7 +617,7 @@ export default function App() {
             <div style={{ fontSize: 11, opacity: 0.85 }}>Namaste, {user?.name} 🙏</div>
           </div>
         </div>
-        <button style={{ background: "rgba(255,255,255,0.2)", border: "none", color: "#fff", borderRadius: 8, padding: "6px 12px", fontSize: 12, cursor: "pointer", fontWeight: 600 }} onClick={handleSignOut}>Sign out</button>
+        <div style={{ fontSize: 11, opacity: 0.75, fontStyle: "italic" }}>Build virtue 🌄</div>
       </div>
 
       {!profileSaved && (
@@ -1043,7 +1043,13 @@ export default function App() {
 
         <div style={{ ...S.card, background: "#FFF9E6", border: "1px solid #F59E0B" }}>
           <div style={{ fontSize: 12, fontWeight: 700, color: "#92400E" }}>🔒 Your Data is Safe</div>
-          <div style={{ fontSize: 11, color: "#92400E", marginTop: 4, lineHeight: 1.5 }}>All data is stored privately on this device. Sign out to keep it secure.</div>
+          <div style={{ fontSize: 11, color: "#92400E", marginTop: 4, lineHeight: 1.5 }}>All data is stored privately on this device. Sign out below to keep it secure.</div>
+        </div>
+
+        <div style={{ ...S.card, border: `1.5px solid ${C.danger}` }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: C.danger, marginBottom: 6 }}>Sign Out</div>
+          <div style={{ fontSize: 12, color: C.muted, marginBottom: 12 }}>You'll need your name, PIN, and security answer to sign back in.</div>
+          <button style={{ ...S.btn(C.danger) }} onClick={handleSignOut}>Sign Out of My Sadbani</button>
         </div>
       </>}
 
