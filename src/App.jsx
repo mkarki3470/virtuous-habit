@@ -145,32 +145,32 @@ const NEPALI_FOODS = [
 ];
 
 const SECURITY_QUESTIONS = [
-  "What was your first pet's name?",
-  "What city were you born in?",
-  "What is your mother's maiden name?",
-  "What was the name of your first school?",
+  "तपाईंको पहिलो पालुवाको नाम के थियो?",
+  "तपाईं कुन शहरमा जन्मनुभयो?",
+  "तपाईंकी आमाको माइती थर के हो?",
+  "तपाईंको पहिलो विद्यालयको नाम के थियो?",
 ];
 
 const MOOD_OPTIONS = [
-  { emoji: "😄", label: "Amazing" }, { emoji: "🙂", label: "Good" },
-  { emoji: "😐", label: "Okay" }, { emoji: "😔", label: "Low" }, { emoji: "😫", label: "Tough" },
+  { emoji: "😄", label: "उत्कृष्ट" }, { emoji: "🙂", label: "राम्रो" },
+  { emoji: "😐", label: "ठिकै" }, { emoji: "😔", label: "कमजोर" }, { emoji: "😫", label: "कठिन" },
 ];
 
 const MOTIVATIONS = [
-  "Rise like the Himalayas — strong, steady, unstoppable. Every step forward is progress. 🏔️",
-  "Like the rivers of Nepal flow tirelessly to the sea, let your dedication be endless. 💧",
-  "Namaste — honor the strength within you today. This moment is a gift, use it well. 🙏",
-  "The mountains don't come to you — you climb to them. Be the force today. ⛰️",
-  "Every sunrise brings new opportunity. Embrace this day with your full heart. 🌅",
-  "Discipline is the bridge between goals and achievement. Cross it daily. 💪",
-  "From the valleys to the peaks — every step counts on this beautiful journey. 🌄",
-  "Small consistent habits build extraordinary lives. Keep going, one step at a time. ✨",
-  "The Himalayas were not built in a day — neither is the best version of you. 🏔️",
-  "Breathe deeply, move mindfully, live fully. You have everything you need within you. 🌿",
-  "Like a prayer flag in the mountain wind — let your intentions carry far today. 🏁",
-  "Strength is not just physical. Your mindset shapes your journey. Stay positive! 🌟",
-  "Each healthy choice is a vote for the person you are becoming. Vote wisely today. 💚",
-  "The summit feels impossible until you're standing on it. Keep climbing. 🧗",
+  "हिमालयझैँ उठ्नुस् — बलियो, स्थिर, अजेय। हरेक अगाडि बढेको पाइला प्रगति हो। 🏔️",
+  "नेपालका नदीहरू अथक रूपमा समुद्रतिर बग्छन्, तपाईंको समर्पण पनि त्यस्तै अनन्त होस्। 💧",
+  "नमस्ते — आज आफ्नो भित्रको शक्तिलाई सम्मान गर्नुस्। यो क्षण एक उपहार हो, सदुपयोग गर्नुस्। 🙏",
+  "पहाड तपाईंकहाँ आउँदैन — तपाईंले पहाड चढ्नुपर्छ। आज त्यो शक्ति बन्नुस्। ⛰️",
+  "हरेक सूर्योदयले नयाँ अवसर ल्याउँछ। आजको दिनलाई पूरा मनले अँगाल्नुस्। 🌅",
+  "अनुशासन लक्ष्य र उपलब्धिबीचको पुल हो। यो पुल दैनिक पार गर्नुस्। 💪",
+  "फाँटबाट शिखरसम्म — यो सुन्दर यात्रामा हरेक पाइला महत्त्वपूर्ण छ। 🌄",
+  "साना नियमित बानीहरूले असाधारण जीवन बनाउँछन्। एक-एक पाइला अघि बढिरहनुस्। ✨",
+  "हिमाल एकै दिनमा बनेको होइन — तपाईंको सर्वश्रेष्ठ संस्करण पनि त्यस्तै हो। 🏔️",
+  "गहिरो श्वास लिनुस्, सचेत भएर चल्नुस्, पूर्णरूपमा बाँच्नुस्। तपाईंभित्र सबै कुरा छ। 🌿",
+  "पहाडको हावामा लहराउने लुङ्गदार झैँ — आजका तपाईंका इरादाहरू टाढासम्म पुगुन्। 🏁",
+  "शक्ति केवल शारीरिक मात्र होइन। तपाईंको मानसिकताले यात्रा बनाउँछ। सकारात्मक रहनुस्! 🌟",
+  "हरेक स्वस्थ विकल्प भावी तपाईंको लागि एक मत हो। आज बुद्धिमानीसाथ मत दिनुस्। 💚",
+  "शिखर असम्भव लाग्छ जबसम्म तपाईं त्यहाँ उभिनुहुन्न। चढिरहनुस्। 🧗",
 ];
 
 function getDailyMotivation() {
@@ -342,27 +342,27 @@ export default function App() {
   }
 
   function handleRegisterStep1() {
-    if (!authForm.name.trim()) { setAuthErr("Please enter your name"); return; }
-    if (!/^\d{4}$/.test(authForm.pin)) { setAuthErr("PIN must be exactly 4 digits"); return; }
-    if (authForm.pin !== authForm.confirmPin) { setAuthErr("PINs don't match"); return; }
+    if (!authForm.name.trim()) { setAuthErr("कृपया नाम लेख्नुस्"); return; }
+    if (!/^\d{4}$/.test(authForm.pin)) { setAuthErr("पिन ठ्याक्कै ४ अंकको हुनुपर्छ"); return; }
+    if (authForm.pin !== authForm.confirmPin) { setAuthErr("पिनहरू मिलेनन्"); return; }
     const username = authForm.name.toLowerCase().trim();
-    if (accounts[username]) { setAuthErr("Name already registered. Try a different name or sign in."); return; }
+    if (accounts[username]) { setAuthErr("नाम पहिले नै दर्ता भएको छ। अर्को नाम प्रयास गर्नुस्।"); return; }
     setAuthErr(""); setScreen("secQ");
   }
   function handleSecQSetup() {
-    if (!secAns.trim()) { setAuthErr("Please answer the security question"); return; }
+    if (!secAns.trim()) { setAuthErr("कृपया सुरक्षा प्रश्नको उत्तर दिनुस्"); return; }
     const username = authForm.name.toLowerCase().trim();
     const newUser = { name: authForm.name.trim(), username, pin: authForm.pin, secQ, secAns: secAns.toLowerCase().trim() };
     const updated = { ...accounts, [username]: newUser };
     setAccounts(updated); storageSet("accounts", updated);
     setUser(newUser); setAuthErr(""); setScreen("dashboard");
-    showToast("🎉 Account created! Welcome");
+    showToast("🎉 खाता बनाइयो! स्वागत छ");
   }
   function handleLogin() {
     const username = authForm.name.toLowerCase().trim();
     const acc = accounts[username];
-    if (!acc) { setAuthErr("Name not found. Please sign up first."); return; }
-    if (acc.pin !== authForm.pin) { setAuthErr("Incorrect PIN"); return; }
+    if (!acc) { setAuthErr("नाम भेटिएन। पहिले दर्ता गर्नुस्।"); return; }
+    if (acc.pin !== authForm.pin) { setAuthErr("गलत पिन"); return; }
     setSecQ(acc.secQ); setSecAnsInput(""); setAuthErr(""); setScreen("loginMFA");
   }
   function handleLoginMFA() {
@@ -370,23 +370,23 @@ export default function App() {
     if (secAnsInput.toLowerCase().trim() === acc.secAns) {
       setUser(acc); setAuthErr(""); setScreen("dashboard");
       showToast(`Welcome back, ${acc.name}! 🙏`);
-    } else setAuthErr("Incorrect answer");
+    } else setAuthErr("गलत उत्तर");
   }
   function handleSignOut() {
     setUser(null); setProfile({ weight: "", height: "", age: "", goal: "lose", gender: "male" });
     setProfileSaved(false); setDailyData({}); setExHistory([]);
     setAuthForm({ name: "", pin: "", confirmPin: "" }); setScreen("login");
-    showToast("Signed out safely 👋");
+    showToast("सुरक्षित साइन आउट भयो 👋");
   }
   function saveProfile() {
-    if (!profile.weight || !profile.height || !profile.age) { showToast("⚠️ Please fill all fields"); return; }
+    if (!profile.weight || !profile.height || !profile.age) { showToast("⚠️ कृपया सबै फिल्ड भर्नुस्"); return; }
     setProfileSaved(true);
     storageSet(`profile:${user.username}`, profile);
     const newWeight = parseFloat(profile.weight);
     const wLog = weightLog.length === 0 || weightLog[weightLog.length - 1].weight !== newWeight ?
       [...weightLog, { date: today, weight: newWeight }] : weightLog;
     setDay("weightLog", wLog);
-    showToast("✓ Profile saved");
+    showToast("✓ प्रोफाइल सेव भयो");
     if (screen === "onboarding") setScreen("dashboard");
   }
 
@@ -485,7 +485,7 @@ export default function App() {
     <div style={{ ...S.wrap, display: "flex", alignItems: "center", justifyContent: "center", height: "100vh" }}>
       <div style={{ textAlign: "center" }}>
         <SunriseIcon size={72} />
-        <div style={{ color: C.muted, marginTop: 14 }}>Loading My Sadbani… 🙏</div>
+        <div style={{ color: C.muted, marginTop: 14 }}>Loading मेरो सद्बाणी… 🙏</div>
       </div>
     </div>
   );
@@ -496,32 +496,32 @@ export default function App() {
       <div style={S.wrap}>
         <div style={{ ...S.header, flexDirection: "column", textAlign: "center", padding: "28px 16px 24px", paddingTop: "calc(env(safe-area-inset-top, 0px) + 28px)", gap: 6 }}>
           <SunriseIcon size={72} />
-          <div style={{ fontSize: 26, fontWeight: 800, letterSpacing: -0.5, marginTop: 8 }}>My Sadbani</div>
-          <div style={{ fontSize: 13, opacity: 0.85, fontStyle: "italic" }}>Build virtue, one habit at a time ✨</div>
+          <div style={{ fontSize: 26, fontWeight: 800, letterSpacing: -0.5, marginTop: 8 }}>मेरो सद्बाणी</div>
+          <div style={{ fontSize: 13, opacity: 0.85, fontStyle: "italic" }}>एक-एक बानीबाट सद्गुण बनाउनुस् ✨</div>
         </div>
         <div style={S.card}>
           <div style={{ display: "flex", gap: 8, marginBottom: 18 }}>
-            {[["login", "Sign In"], ["register", "Sign Up"]].map(([s, lbl]) => (
+            {[["login", "साइन इन"], ["register", "दर्ता गर्नुस्"]].map(([s, lbl]) => (
               <button key={s} style={{ ...S.pill(screen === s), flex: 1 }} onClick={() => { setScreen(s); setAuthErr(""); }}>{lbl}</button>
             ))}
           </div>
-          <span style={S.label}>Full Name</span>
-          <input style={S.input} placeholder="e.g. Manish Karki" value={authForm.name} onChange={e => setAuthForm(p => ({ ...p, name: e.target.value }))} />
-          <span style={S.label}>4-Digit PIN</span>
+          <span style={S.label}>पूरा नाम</span>
+          <input style={S.input} placeholder="जस्तै: मनिष कार्की" value={authForm.name} onChange={e => setAuthForm(p => ({ ...p, name: e.target.value }))} />
+          <span style={S.label}>४ अंकको पिन</span>
           <input style={{ ...S.input, letterSpacing: 6, fontWeight: 700 }} type="password" inputMode="numeric" maxLength={4} placeholder="••••" value={authForm.pin} onChange={e => setAuthForm(p => ({ ...p, pin: e.target.value.replace(/\D/g, "").slice(0, 4) }))} />
           {isReg && <>
-            <span style={S.label}>Confirm PIN</span>
+            <span style={S.label}>पिन पुष्टि</span>
             <input style={{ ...S.input, letterSpacing: 6, fontWeight: 700 }} type="password" inputMode="numeric" maxLength={4} placeholder="••••" value={authForm.confirmPin} onChange={e => setAuthForm(p => ({ ...p, confirmPin: e.target.value.replace(/\D/g, "").slice(0, 4) }))} />
           </>}
           {authErr && <div style={S.err}>⚠️ {authErr}</div>}
           <button style={{ ...S.btn(), marginTop: 16 }} onClick={isReg ? handleRegisterStep1 : handleLogin}>
-            {isReg ? "Continue → Security Setup" : "Sign In"}
+            {isReg ? "जारी → सुरक्षा सेटअप" : "साइन इन"}
           </button>
         </div>
         {isReg && (
           <div style={{ ...S.card, background: C.primaryLight, border: `1px solid #C5C0F5` }}>
-            <div style={{ fontSize: 12, color: C.primary, fontWeight: 700 }}>🔐 Two-Step Security</div>
-            <div style={{ fontSize: 12, color: C.muted, marginTop: 4, lineHeight: 1.5 }}>Sign-in uses your 4-digit PIN + a security question for extra account safety.</div>
+            <div style={{ fontSize: 12, color: C.primary, fontWeight: 700 }}>🔐 दुई-चरण सुरक्षा</div>
+            <div style={{ fontSize: 12, color: C.muted, marginTop: 4, lineHeight: 1.5 }}>साइन इनमा ४ अंकको पिन + सुरक्षा प्रश्न आवश्यक पर्छ।</div>
           </div>
         )}
         {toast && <div style={S.toast}>{toast}</div>}
@@ -533,19 +533,19 @@ export default function App() {
     <div style={S.wrap}>
       <div style={{ ...S.header, justifyContent: "center", flexDirection: "column", textAlign: "center", padding: "24px 16px", paddingTop: "calc(env(safe-area-inset-top, 0px) + 24px)" }}>
         <div style={{ fontSize: 34 }}>🔐</div>
-        <div style={{ fontSize: 18, fontWeight: 700 }}>Security Setup</div>
-        <div style={{ fontSize: 12, opacity: 0.8 }}>One-time setup · protects your account</div>
+        <div style={{ fontSize: 18, fontWeight: 700 }}>सुरक्षा सेटअप</div>
+        <div style={{ fontSize: 12, opacity: 0.8 }}>एक पटकको सेटअप · खाता सुरक्षित गर्छ</div>
       </div>
       <div style={S.card}>
-        <div style={{ fontSize: 13, color: C.muted, marginBottom: 12 }}>You'll be asked this question on future logins.</div>
-        <span style={S.label}>Choose a security question</span>
+        <div style={{ fontSize: 13, color: C.muted, marginBottom: 12 }}>भविष्यमा साइन इन गर्दा यो प्रश्न सोधिनेछ।</div>
+        <span style={S.label}>सुरक्षा प्रश्न छान्नुस्</span>
         <select style={S.input} value={secQ} onChange={e => setSecQ(+e.target.value)}>
           {SECURITY_QUESTIONS.map((q, i) => <option key={i} value={i}>{q}</option>)}
         </select>
-        <span style={S.label}>Your Answer</span>
-        <input style={S.input} placeholder="Case-insensitive" value={secAns} onChange={e => setSecAns(e.target.value)} />
+        <span style={S.label}>तपाईंको उत्तर</span>
+        <input style={S.input} placeholder="माथिल्लो/तल्लो फरक पर्दैन" value={secAns} onChange={e => setSecAns(e.target.value)} />
         {authErr && <div style={S.err}>⚠️ {authErr}</div>}
-        <button style={{ ...S.btn(), marginTop: 14 }} onClick={handleSecQSetup}>Complete Setup 🎉</button>
+        <button style={{ ...S.btn(), marginTop: 14 }} onClick={handleSecQSetup}>सेटअप पूरा गर्नुस् 🎉</button>
       </div>
       {toast && <div style={S.toast}>{toast}</div>}
     </div>
@@ -555,15 +555,15 @@ export default function App() {
     <div style={S.wrap}>
       <div style={{ ...S.header, justifyContent: "center", flexDirection: "column", textAlign: "center", padding: "24px 16px", paddingTop: "calc(env(safe-area-inset-top, 0px) + 24px)" }}>
         <div style={{ fontSize: 34 }}>🔐</div>
-        <div style={{ fontSize: 18, fontWeight: 700 }}>Verify It's You</div>
+        <div style={{ fontSize: 18, fontWeight: 700 }}>पहिचान प्रमाणित गर्नुस्</div>
         <div style={{ fontSize: 12, opacity: 0.8 }}>2-Factor Security</div>
       </div>
       <div style={S.card}>
         <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 10 }}>{SECURITY_QUESTIONS[secQ]}</div>
-        <input style={S.input} placeholder="Your answer" value={secAnsInput} onChange={e => setSecAnsInput(e.target.value)} />
+        <input style={S.input} placeholder="तपाईंको उत्तर" value={secAnsInput} onChange={e => setSecAnsInput(e.target.value)} />
         {authErr && <div style={S.err}>⚠️ {authErr}</div>}
-        <button style={{ ...S.btn(), marginTop: 14 }} onClick={handleLoginMFA}>Verify & Sign In</button>
-        <button style={{ ...S.btnOut, width: "100%", marginTop: 10, padding: "10px" }} onClick={() => setScreen("login")}>← Back</button>
+        <button style={{ ...S.btn(), marginTop: 14 }} onClick={handleLoginMFA}>प्रमाणित गरी साइन इन गर्नुस्</button>
+        <button style={{ ...S.btnOut, width: "100%", marginTop: 10, padding: "10px" }} onClick={() => setScreen("login")}>← पछि जानुस्</button>
       </div>
       {toast && <div style={S.toast}>{toast}</div>}
     </div>
@@ -572,11 +572,11 @@ export default function App() {
   if (screen === "onboarding") return (
     <div style={S.wrap}>
       <div style={{ ...S.header, justifyContent: "center", flexDirection: "column", textAlign: "center", padding: "24px 16px", paddingTop: "calc(env(safe-area-inset-top, 0px) + 24px)" }}>
-        <div style={{ fontSize: 18, fontWeight: 700 }}>Set Up Your Profile</div>
-        <div style={{ fontSize: 12, opacity: 0.8 }}>Help us personalize your plan</div>
+        <div style={{ fontSize: 18, fontWeight: 700 }}>प्रोफाइल बनाउनुस्</div>
+        <div style={{ fontSize: 12, opacity: 0.8 }}>तपाईंको योजना व्यक्तिगत बनाउन मद्दत गर्नुस्</div>
       </div>
       <div style={S.card}>
-        {[["Weight (lbs)", "weight", "150"], ["Height (ft)", "height", "5.7"], ["Age", "age", "30"]].map(([lbl, k, ph]) => (
+        {[["तौल (पाउन्ड)", "weight", "150"], ["उचाइ (फिट)", "height", "5.7"], ["उमेर", "age", "30"]].map(([lbl, k, ph]) => (
           <div key={k}><span style={S.label}>{lbl}</span><input style={S.input} type="number" placeholder={ph} value={profile[k]} onChange={e => setProfile(p => ({ ...p, [k]: e.target.value }))} /></div>
         ))}
         <span style={S.label}>Gender</span>
@@ -585,22 +585,22 @@ export default function App() {
         </select>
         <span style={S.label}>Goal</span>
         <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
-          {[["lose", "🔥 Lose"], ["maintain", "⚖️ Maintain"], ["gain", "💪 Gain"]].map(([v, lbl]) => (
+          {[["lose", "🔥 घटाउने"], ["maintain", "⚖️ कायम राख्ने"], ["gain", "💪 बढाउने"]].map(([v, lbl]) => (
             <button key={v} style={{ ...S.pill(profile.goal === v), flex: 1 }} onClick={() => setProfile(p => ({ ...p, goal: v }))}>{lbl}</button>
           ))}
         </div>
-        <button style={{ ...S.btn(), marginTop: 18 }} onClick={saveProfile}>Generate My Plan →</button>
+        <button style={{ ...S.btn(), marginTop: 18 }} onClick={saveProfile}>मेरो योजना बनाउनुस् →</button>
       </div>
       {toast && <div style={S.toast}>{toast}</div>}
     </div>
   );
 
   const TABS = [
-    { id: "home", icon: "🏠", label: "Home" },
-    { id: "diet", icon: "🥗", label: "Diet" },
-    { id: "exercise", icon: "💪", label: "Exercise" },
-    { id: "journal", icon: "📔", label: "Journal" },
-    { id: "profile", icon: "👤", label: "Me" },
+    { id: "home", icon: "🏠", label: "गृह" },
+    { id: "diet", icon: "🥗", label: "आहार" },
+    { id: "exercise", icon: "💪", label: "व्यायाम" },
+    { id: "journal", icon: "📔", label: "दैनिकी" },
+    { id: "profile", icon: "👤", label: "म" },
   ];
 
   const allExHistory = getAllExercises();
@@ -613,38 +613,38 @@ export default function App() {
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <SunriseIcon size={36} />
           <div>
-            <div style={{ fontSize: 16, fontWeight: 800 }}>My Sadbani</div>
-            <div style={{ fontSize: 11, opacity: 0.85 }}>Namaste, {user?.name} 🙏</div>
+            <div style={{ fontSize: 16, fontWeight: 800 }}>मेरो सद्बाणी</div>
+            <div style={{ fontSize: 11, opacity: 0.85 }}>नमस्ते, {user?.name} 🙏</div>
           </div>
         </div>
-        <div style={{ fontSize: 11, opacity: 0.75, fontStyle: "italic" }}>Build virtue 🌄</div>
+        <div style={{ fontSize: 11, opacity: 0.75, fontStyle: "italic" }}>सद्गुण बनाउनुस् 🌄</div>
       </div>
 
       {!profileSaved && (
         <div style={{ ...S.card, background: C.primaryLight, border: `1.5px solid ${C.primary}` }}>
-          <div style={{ fontWeight: 700, fontSize: 14 }}>👋 Welcome! Set up your profile to unlock your personalized plan.</div>
-          <button style={{ ...S.btn(), marginTop: 10 }} onClick={() => setScreen("onboarding")}>Set Up Profile →</button>
+          <div style={{ fontWeight: 700, fontSize: 14 }}>👋 स्वागत! व्यक्तिगत योजना पाउन प्रोफाइल बनाउनुस्।</div>
+          <button style={{ ...S.btn(), marginTop: 10 }} onClick={() => setScreen("onboarding")}>प्रोफाइल बनाउनुस् →</button>
         </div>
       )}
 
       {/* HOME */}
       {tab === "home" && <>
         <div style={{ ...S.card, background: "linear-gradient(135deg, #EEF0FF, #E8FAF0)" }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: C.primary, marginBottom: 6 }}>🌄 Today's Motivation</div>
+          <div style={{ fontSize: 12, fontWeight: 700, color: C.primary, marginBottom: 6 }}>🌄 आजको प्रेरणा</div>
           <div style={{ fontSize: 13, color: C.text, lineHeight: 1.6 }}>{getDailyMotivation()}</div>
         </div>
 
         {profileSaved && (
           <div style={S.card}>
-            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 10 }}>📊 Today's Snapshot</div>
+            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 10 }}>📊 आजको सारांश</div>
             <div style={{ display: "flex", gap: 6 }}>
-              <div style={{ ...S.stat, cursor: "pointer" }} onClick={() => setTab("diet")}><div style={{ fontSize: 10, color: C.muted }}>Calories</div><div style={{ fontSize: 18, fontWeight: 800, color: C.primary }}>{totalCal}</div><div style={{ fontSize: 9, color: C.muted }}>/{calTarget()}</div></div>
-              <div style={{ ...S.stat, cursor: "pointer" }} onClick={() => setTab("journal")}><div style={{ fontSize: 10, color: C.muted }}>Water</div><div style={{ fontSize: 18, fontWeight: 800, color: C.blue }}>{water}</div><div style={{ fontSize: 9, color: C.muted }}>/8 cups</div></div>
-              <div style={{ ...S.stat, cursor: "pointer" }} onClick={() => setTab("exercise")}><div style={{ fontSize: 10, color: C.muted }}>Workout</div><div style={{ fontSize: 18, fontWeight: 800, color: C.accent }}>{exerciseLog.length}</div><div style={{ fontSize: 9, color: C.muted }}>done</div></div>
-              <div style={{ ...S.stat, cursor: "pointer" }} onClick={() => setTab("journal")}><div style={{ fontSize: 10, color: C.muted }}>Habits</div><div style={{ fontSize: 18, fontWeight: 800, color: C.warn }}>{habitsCount}</div><div style={{ fontSize: 9, color: C.muted }}>/5</div></div>
+              <div style={{ ...S.stat, cursor: "pointer" }} onClick={() => setTab("diet")}><div style={{ fontSize: 10, color: C.muted }}>क्यालोरी</div><div style={{ fontSize: 18, fontWeight: 800, color: C.primary }}>{totalCal}</div><div style={{ fontSize: 9, color: C.muted }}>/{calTarget()}</div></div>
+              <div style={{ ...S.stat, cursor: "pointer" }} onClick={() => setTab("journal")}><div style={{ fontSize: 10, color: C.muted }}>पानी</div><div style={{ fontSize: 18, fontWeight: 800, color: C.blue }}>{water}</div><div style={{ fontSize: 9, color: C.muted }}>/8 cups</div></div>
+              <div style={{ ...S.stat, cursor: "pointer" }} onClick={() => setTab("exercise")}><div style={{ fontSize: 10, color: C.muted }}>कसरत</div><div style={{ fontSize: 18, fontWeight: 800, color: C.accent }}>{exerciseLog.length}</div><div style={{ fontSize: 9, color: C.muted }}>done</div></div>
+              <div style={{ ...S.stat, cursor: "pointer" }} onClick={() => setTab("journal")}><div style={{ fontSize: 10, color: C.muted }}>बानी</div><div style={{ fontSize: 18, fontWeight: 800, color: C.warn }}>{habitsCount}</div><div style={{ fontSize: 9, color: C.muted }}>/5</div></div>
             </div>
             <div style={{ marginTop: 12 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: C.muted }}><span>Calorie Progress</span><span>{pct}%</span></div>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: C.muted }}><span>क्यालोरी प्रगति</span><span>{pct}%</span></div>
               <div style={{ height: 8, borderRadius: 4, background: "#E5E2F5", marginTop: 4, overflow: "hidden" }}>
                 <div style={{ height: 8, borderRadius: 4, width: pct + "%", background: pct >= 100 ? C.danger : C.primary, transition: "width 0.4s" }}></div>
               </div>
@@ -653,8 +653,8 @@ export default function App() {
         )}
 
         <div style={S.card}>
-          <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 8 }}>Quick Habits</div>
-          {[["💧", "Drank 8 glasses of water", "water"], ["🥗", "Ate mindfully today", "healthy"], ["🧘", "Meditated / Pranayama", "meditate"], ["😴", "Slept 7+ hours", "sleep"], ["🚶", "Walked 7,000+ steps", "walk"]].map(([icon, lbl, key]) => (
+          <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 8 }}>छिटो बानी</div>
+          {[["💧", "८ गिलास पानी पिएँ", "water"], ["🥗", "आज सचेत भएर खाएँ", "healthy"], ["🧘", "ध्यान / प्राणायाम गरेँ", "meditate"], ["😴", "७+ घण्टा सुतेँ", "sleep"], ["🚶", "७,०००+ पाइला हिँडेँ", "walk"]].map(([icon, lbl, key]) => (
             <div key={key} onClick={() => toggleHabit(key)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 0", borderBottom: "0.5px solid #F0EEF9", cursor: "pointer" }}>
               <div style={{ width: 26, height: 26, borderRadius: 7, border: `2px solid ${habits[key] ? C.accent : "#CCC"}`, background: habits[key] ? C.accent : "#fff", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 15, fontWeight: 700, flexShrink: 0 }}>{habits[key] ? "✓" : ""}</div>
               <span style={{ fontSize: 13 }}>{icon} {lbl}</span>
@@ -662,20 +662,20 @@ export default function App() {
           ))}
         </div>
         <div style={{ display: "flex", justifyContent: "flex-end", padding: "4px 12px 8px" }}>
-          <button style={S.btnSm(C.primary)} onClick={() => setTab("diet")}>Diet →</button>
+          <button style={S.btnSm(C.primary)} onClick={() => setTab("diet")}>आहार →</button>
         </div>
       </>}
 
       {/* DIET */}
       {tab === "diet" && <>
         {profileSaved && <div style={{ ...S.card, background: C.primaryLight }}>
-          <div style={{ fontSize: 13, fontWeight: 600 }}>🎯 Target: <span style={{ color: C.primary }}>{calTarget()} kcal/day</span></div>
+          <div style={{ fontSize: 13, fontWeight: 600 }}>🎯 लक्ष्य:<span style={{ color: C.primary }}>{calTarget()} किकेल/दिन</span></div>
           <div style={{ fontSize: 12, color: C.muted, marginTop: 4 }}>Eaten: <b style={{ color: C.accent }}>{totalCal} kcal</b> · Protein: <b>{totalProtein}g</b></div>
         </div>}
 
         <div style={S.card}>
           <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-            {[["nepali", "🇳🇵 Nepali / Indian"], ["search", "🔍 Search Foods"]].map(([t, lbl]) => <button key={t} style={S.pill(foodTab === t)} onClick={() => setFoodTab(t)}>{lbl}</button>)}
+            {[["nepali", "🇳🇵 नेपाली / भारतीय"], ["search", "🔍 खाना खोज्नुस्"]].map(([t, lbl]) => <button key={t} style={S.pill(foodTab === t)} onClick={() => setFoodTab(t)}>{lbl}</button>)}
           </div>
 
           {foodTab === "nepali" && NEPALI_FOODS.map((f, i) => (
@@ -690,7 +690,7 @@ export default function App() {
 
           {foodTab === "search" && <>
             <div style={{ display: "flex", gap: 8 }}>
-              <input style={{ ...S.input, marginTop: 0, flex: 1 }} placeholder="Search any food..." value={foodQ} onChange={e => setFoodQ(e.target.value)} onKeyDown={e => e.key === "Enter" && searchFood(foodQ)} />
+              <input style={{ ...S.input, marginTop: 0, flex: 1 }} placeholder="कुनै पनि खाना खोज्नुस्..." value={foodQ} onChange={e => setFoodQ(e.target.value)} onKeyDown={e => e.key === "Enter" && searchFood(foodQ)} />
               <button style={{ ...S.btnSm(C.primary), whiteSpace: "nowrap" }} onClick={() => searchFood(foodQ)} disabled={foodLoading}>{foodLoading ? "..." : "Search"}</button>
             </div>
             {foodErr && <div style={{ ...S.err, fontSize: 12 }}>⚠️ {foodErr}</div>}
@@ -709,7 +709,7 @@ export default function App() {
 
         {meals.length > 0 && (
           <div style={S.card}>
-            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 8 }}>Today's Food Log 📝 ({meals.length})</div>
+            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 8 }}>आजको खाना विवरण 📝 ({meals.length})</div>
             {meals.map((m, i) => (
               <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "6px 0", borderBottom: "0.5px solid #F0EEF9" }}>
                 <div style={{ fontSize: 13 }}>{m.name} <span style={{ color: C.muted, fontSize: 11 }}>({m.cal} kcal)</span></div>
@@ -720,7 +720,7 @@ export default function App() {
           </div>
         )}
         <div style={{ display: "flex", justifyContent: "flex-end", padding: "4px 12px 8px" }}>
-          <button style={S.btnSm(C.primary)} onClick={() => setTab("exercise")}>Exercise →</button>
+          <button style={S.btnSm(C.primary)} onClick={() => setTab("exercise")}>व्यायाम →</button>
         </div>
       </>}
 
@@ -728,7 +728,7 @@ export default function App() {
       {tab === "exercise" && <>
         <div style={{ ...S.card, paddingBottom: 10 }}>
           <div style={{ display: "flex", gap: 6 }}>
-            {[["exercise", "💪 Workout"], ["yoga", "🧘 Yoga"], ["reports", "📊 Reports"]].map(([t, lbl]) => <button key={t} style={S.pill(exTab === t)} onClick={() => { setExTab(t); setReportExercise(null); }}>{lbl}</button>)}
+            {[["exercise", "💪 कसरत"], ["yoga", "🧘 योग"], ["reports", "📊 रिपोर्ट"]].map(([t, lbl]) => <button key={t} style={S.pill(exTab === t)} onClick={() => { setExTab(t); setReportExercise(null); }}>{lbl}</button>)}
           </div>
         </div>
 
@@ -764,7 +764,7 @@ export default function App() {
           </div>
 
           <div style={S.card}>
-            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 8 }}>🏋️ Gym Tracker — Past 7 Days</div>
+            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 8 }}>🏋️ जिम ट्र्याकर — पछिल्ला ७ दिन</div>
             <div style={{ display: "flex", gap: 5 }}>
               {[-6, -5, -4, -3, -2, -1, 0].map(off => {
                 const d = new Date(); d.setDate(d.getDate() + off);
@@ -787,7 +787,7 @@ export default function App() {
           <div style={{ padding: "0 12px", display: "flex", gap: 6, flexWrap: "wrap" }}>
             {(isYoga50 ? ["50plus", "flexibility", "strength", "balance", "breathing", "relaxation"] : ["flexibility", "strength", "balance", "breathing", "relaxation", "50plus"]).map(c => (
               <button key={c} style={S.pill(yogaCat === c)} onClick={() => setYogaCat(c)}>
-                {c === "50plus" ? "🌿 50+" : c.charAt(0).toUpperCase() + c.slice(1)}
+                {c === "50plus" ? "🌿 ५०+" : c.charAt(0).toUpperCase() + c.slice(1)}
               </button>
             ))}
           </div>
@@ -881,20 +881,20 @@ export default function App() {
           )}
         </>}
         <div style={{ display: "flex", justifyContent: "flex-end", padding: "4px 12px 8px" }}>
-          <button style={S.btnSm(C.primary)} onClick={() => setTab("journal")}>Journal →</button>
+          <button style={S.btnSm(C.primary)} onClick={() => setTab("journal")}>दैनिकी →</button>
         </div>
       </>}
 
       {/* JOURNAL */}
       {tab === "journal" && <>
         <div style={{ ...S.card, background: "linear-gradient(135deg, #EEF0FF, #DBEAFE)" }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: C.primary }}>📔 Daily Journal — {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}</div>
-          <div style={{ fontSize: 12, color: C.muted, marginTop: 4 }}>Everything you tracked today, all in one place.</div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: C.primary }}>📔 दैनिक जर्नल — {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}</div>
+          <div style={{ fontSize: 12, color: C.muted, marginTop: 4 }}>आज ट्र्याक गर्नुभएको सबै कुरा एकै ठाउँमा।</div>
         </div>
 
         <div style={S.card}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-            <div style={{ fontWeight: 700, fontSize: 14 }}>💧 Water Intake</div>
+            <div style={{ fontWeight: 700, fontSize: 14 }}>💧 पानी सेवन</div>
             <div style={{ fontSize: 14, fontWeight: 700, color: C.blue }}>{water} / 8 cups</div>
           </div>
           <div style={{ display: "flex", gap: 4, justifyContent: "space-between" }}>
@@ -903,7 +903,7 @@ export default function App() {
             ))}
           </div>
           <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
-            <button style={{ ...S.btnSm(C.blue), flex: 1 }} onClick={() => setWater(water + 1)}>+ Add Cup</button>
+            <button style={{ ...S.btnSm(C.blue), flex: 1 }} onClick={() => setWater(water + 1)}>+ कप थप्नुस्</button>
             <button style={{ ...S.btnOut, flex: 1, padding: "6px" }} onClick={() => setWater(0)}>Reset</button>
           </div>
         </div>
@@ -924,7 +924,7 @@ export default function App() {
 
         <div style={S.card}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-            <div style={{ fontWeight: 700, fontSize: 14 }}>💪 Workouts ({exerciseLog.length})</div>
+            <div style={{ fontWeight: 700, fontSize: 14 }}>💪 कसरतs ({exerciseLog.length})</div>
             <span style={{ fontSize: 13, fontWeight: 700, color: C.accent }}>{exerciseLog.reduce((s, e) => s + (e.cal || 0), 0)} kcal</span>
           </div>
           {exerciseLog.length === 0 ? <div style={{ fontSize: 13, color: C.muted, padding: 8, textAlign: "center" }}>No exercises logged. Tap <b>Exercise</b> tab to add.</div> :
@@ -958,7 +958,7 @@ export default function App() {
         </div>
 
         <div style={S.card}>
-          <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 10 }}>😊 How are you feeling?</div>
+          <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 10 }}>😊 आज कस्तो महसुस हुँदैछ?</div>
           <div style={{ display: "flex", gap: 4, justifyContent: "space-between" }}>
             {MOOD_OPTIONS.map((m, i) => (
               <div key={i} onClick={() => setDay("mood", m.label)} style={{ cursor: "pointer", flex: 1, textAlign: "center", padding: 8, borderRadius: 10, background: mood === m.label ? C.primaryLight : "transparent", border: `1.5px solid ${mood === m.label ? C.primary : "transparent"}` }}>
@@ -970,23 +970,23 @@ export default function App() {
         </div>
 
         <div style={S.card}>
-          <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 6 }}>📝 Daily Reflection</div>
-          <div style={{ fontSize: 12, color: C.muted, marginBottom: 8 }}>How did your day go? Wins, challenges, thoughts...</div>
+          <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 6 }}>📝 दैनिक विचार</div>
+          <div style={{ fontSize: 12, color: C.muted, marginBottom: 8 }}>आजको दिन कस्तो बित्यो? सफलता, चुनौती, विचार...</div>
           <textarea
             style={{ ...S.input, minHeight: 100, fontFamily: "inherit", resize: "vertical", marginTop: 0 }}
-            placeholder="Today I felt... I'm grateful for... Tomorrow I want to..."
+            placeholder="आज मैले... कृतज्ञ छु... भोलि चाहन्छु..."
             value={notes}
             onChange={e => setDay("notes", e.target.value)}
           />
-          <div style={{ fontSize: 11, color: C.muted, marginTop: 6, textAlign: "right" }}>{notes.length} characters · Auto-saved 💾</div>
+          <div style={{ fontSize: 11, color: C.muted, marginTop: 6, textAlign: "right" }}>{notes.length} अक्षर · स्वचालित सेव 💾</div>
         </div>
 
         <div style={{ ...S.card, background: C.accentLight, border: `1px solid ${C.accent}`, textAlign: "center" }}>
-          <div style={{ fontSize: 13, color: "#065F46", fontWeight: 600 }}>🌟 Day Score: {Math.round(((habitsCount * 20) + (water >= 8 ? 20 : water * 2.5) + (exerciseLog.length > 0 ? 20 : 0) + (notes.length > 20 ? 20 : 0) + (mood ? 20 : 0)) / 5)}%</div>
-          <div style={{ fontSize: 11, color: "#065F46", marginTop: 4 }}>Habits · Water · Exercise · Reflection · Mood</div>
+          <div style={{ fontSize: 13, color: "#065F46", fontWeight: 600 }}>🌟 दिनको स्कोर: {Math.round(((habitsCount * 20) + (water >= 8 ? 20 : water * 2.5) + (exerciseLog.length > 0 ? 20 : 0) + (notes.length > 20 ? 20 : 0) + (mood ? 20 : 0)) / 5)}%</div>
+          <div style={{ fontSize: 11, color: "#065F46", marginTop: 4 }}>बानी · पानी · व्यायाम · विचार · मनोदशा</div>
         </div>
         <div style={{ display: "flex", justifyContent: "flex-end", padding: "4px 12px 8px" }}>
-          <button style={S.btnSm(C.primary)} onClick={() => setTab("profile")}>My Profile →</button>
+          <button style={S.btnSm(C.primary)} onClick={() => setTab("profile")}>मेरो प्रोफाइल →</button>
         </div>
       </>}
 
@@ -1008,9 +1008,9 @@ export default function App() {
 
         {profileSaved && (
           <div style={S.card}>
-            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 10 }}>📈 Health Metrics</div>
+            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 10 }}>📈 स्वास्थ्य मापन</div>
             <div style={{ display: "flex", gap: 6 }}>
-              {[["BMI", bmi, bi?.color, bi?.label], ["BMR", bmr, C.primary, "kcal/day"], ["TDEE", tdee, C.accent, "kcal/day"]].map(([lbl, val, col, sub]) => (
+              {[["BMI", bmi, bi?.color, bi?.label], ["BMR", bmr, C.primary, "किकेल/दिन"], ["TDEE", tdee, C.accent, "किकेल/दिन"]].map(([lbl, val, col, sub]) => (
                 <div key={lbl} style={S.stat}><div style={{ fontSize: 10, color: C.muted }}>{lbl}</div><div style={{ fontSize: 18, fontWeight: 800, color: col }}>{val}</div><div style={{ fontSize: 9, color: col }}>{sub}</div></div>
               ))}
             </div>
@@ -1020,7 +1020,7 @@ export default function App() {
 
         {weightLog.length > 0 && (
           <div style={S.card}>
-            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 8 }}>⚖️ Body Weight History</div>
+            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 8 }}>⚖️ शरीरको तौल इतिहास</div>
             {weightLog.slice(-5).reverse().map((w, i) => (
               <div key={i} style={{ display: "flex", justifyContent: "space-between", fontSize: 13, padding: "5px 0", borderBottom: "0.5px solid #F0EEF9" }}>
                 <span style={{ color: C.muted }}>{w.date}</span><span style={{ fontWeight: 700 }}>{w.weight} lbs</span>
@@ -1030,26 +1030,26 @@ export default function App() {
         )}
 
         <div style={S.card}>
-          <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 10 }}>✏️ Update Profile</div>
-          {[["Weight (lbs)", "weight"], ["Height (ft)", "height"], ["Age", "age"]].map(([lbl, k]) => (
+          <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 10 }}>✏️ प्रोफाइल अपडेट</div>
+          {[["तौल (पाउन्ड)", "weight"], ["उचाइ (फिट)", "height"], ["उमेर", "age"]].map(([lbl, k]) => (
             <div key={k}><span style={S.label}>{lbl}</span><input style={S.input} type="number" value={profile[k]} onChange={e => setProfile(p => ({ ...p, [k]: e.target.value }))} /></div>
           ))}
           <span style={S.label}>Goal</span>
           <select style={S.input} value={profile.goal} onChange={e => setProfile(p => ({ ...p, goal: e.target.value }))}>
-            <option value="lose">Lose Weight</option><option value="maintain">Maintain</option><option value="gain">Gain Muscle</option>
+            <option value="lose">तौल घटाउने</option><option value="maintain">Maintain</option><option value="gain">मांसपेशी बढाउने</option>
           </select>
-          <button style={{ ...S.btn(), marginTop: 14 }} onClick={saveProfile}>Save Changes ✓</button>
+          <button style={{ ...S.btn(), marginTop: 14 }} onClick={saveProfile}>परिवर्तन सेव गर्नुस् ✓</button>
         </div>
 
         <div style={{ ...S.card, background: "#FFF9E6", border: "1px solid #F59E0B" }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: "#92400E" }}>🔒 Your Data is Safe</div>
-          <div style={{ fontSize: 11, color: "#92400E", marginTop: 4, lineHeight: 1.5 }}>All data is stored privately on this device. Sign out below to keep it secure.</div>
+          <div style={{ fontSize: 12, fontWeight: 700, color: "#92400E" }}>🔒 तपाईंको डाटा सुरक्षित छ</div>
+          <div style={{ fontSize: 11, color: "#92400E", marginTop: 4, lineHeight: 1.5 }}>सबै डाटा यो उपकरणमा निजी रूपमा सेव गरिएको छ।</div>
         </div>
 
         <div style={{ ...S.card, border: `1.5px solid ${C.danger}` }}>
           <div style={{ fontSize: 13, fontWeight: 700, color: C.danger, marginBottom: 6 }}>Sign Out</div>
-          <div style={{ fontSize: 12, color: C.muted, marginBottom: 12 }}>You'll need your name, PIN, and security answer to sign back in.</div>
-          <button style={{ ...S.btn(C.danger) }} onClick={handleSignOut}>Sign Out of My Sadbani</button>
+          <div style={{ fontSize: 12, color: C.muted, marginBottom: 12 }}>फेरि साइन इन गर्न नाम, पिन र सुरक्षा उत्तर चाहिन्छ।</div>
+          <button style={{ ...S.btn(C.danger) }} onClick={handleSignOut}>मेरो सद्बाणीबाट साइन आउट गर्नुस्</button>
         </div>
       </>}
 
@@ -1065,7 +1065,7 @@ export default function App() {
       {logModal && (
         <div style={S.modal} onClick={() => setLogModal(null)}>
           <div style={S.modalCard} onClick={e => e.stopPropagation()}>
-            <div style={{ fontSize: 16, fontWeight: 800, marginBottom: 4 }}>Log Workout</div>
+            <div style={{ fontSize: 16, fontWeight: 800, marginBottom: 4 }}>कसरत थप्नुस्</div>
             <div style={{ fontSize: 13, color: C.primary, fontWeight: 600 }}>{logModal.ex.name}</div>
             <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>Target: {logModal.ex.sets} · {logModal.ex.muscle}</div>
 
@@ -1093,11 +1093,11 @@ export default function App() {
               </div>
             </div>
 
-            <div style={{ fontSize: 11, color: C.muted, marginTop: 8 }}>💡 Bodyweight exercises? Leave weight at 0.</div>
+            <div style={{ fontSize: 11, color: C.muted, marginTop: 8 }}>💡 आफ्नै तौलबाट गर्ने? तौल ० राख्नुस्।</div>
 
             <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
               <button style={{ ...S.btnOut, flex: 1, padding: "10px" }} onClick={() => setLogModal(null)}>Cancel</button>
-              <button style={{ ...S.btn(), flex: 2 }} onClick={confirmLogExercise}>Save Workout ✓</button>
+              <button style={{ ...S.btn(), flex: 2 }} onClick={confirmLogExercise}>कसरत सेव गर्नुस् ✓</button>
             </div>
           </div>
         </div>

@@ -9,9 +9,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['icons/*.png'],
       manifest: {
-        name: 'My Sadbani',
-        short_name: 'MySadbani',
-        description: 'Build virtue, one habit at a time',
+        name: 'मेरो सद्बाणी',
+        short_name: 'सद्बाणी',
+        description: 'एक-एक बानीबाट सद्गुण बनाउनुस्',
         theme_color: '#5B4FCF',
         background_color: '#F7F6FF',
         display: 'standalone',
