@@ -1,4 +1,9 @@
 import { useState, useEffect } from "react";
+import emailjs from "@emailjs/browser";
+
+const EMAILJS_SERVICE  = import.meta.env.VITE_EMAILJS_SERVICE;
+const EMAILJS_TEMPLATE = import.meta.env.VITE_EMAILJS_TEMPLATE;
+const EMAILJS_KEY      = import.meta.env.VITE_EMAILJS_KEY;
 
 const C = {
   primary: "#5B4FCF", primaryDark: "#4338CA", primaryLight: "#EEF0FF",
@@ -273,6 +278,7 @@ export default function App() {
   const [logSets, setLogSets] = useState("");
 
   const [reportExercise, setReportExercise] = useState(null);
+  const [otpLoading, setOtpLoading] = useState(false);
 
   useEffect(() => {
     const accs = storageGet("accounts");
@@ -343,15 +349,25 @@ export default function App() {
     setFoodLoading(false);
   }
 
-  function handleRegisterStep1() {
+  async function handleRegisterStep1() {
     if (!authForm.name.trim()) { setAuthErr("Please enter your name"); return; }
     if (!authForm.email.includes("@")) { setAuthErr("Please enter a valid email"); return; }
     if (authForm.password.length < 6) { setAuthErr("Password must be 6+ characters"); return; }
     if (authForm.password !== authForm.confirmPw) { setAuthErr("Passwords don't match"); return; }
     if (accounts[authForm.email.toLowerCase()]) { setAuthErr("Email already registered. Please sign in."); return; }
     const otp = genOTP();
-    setOtpSent(otp); setOtpInput(""); setAuthErr("");
-    setScreen("otp");
+    setOtpSent(otp); setOtpInput(""); setAuthErr(""); setOtpLoading(true);
+    try {
+      await emailjs.send(
+        EMAILJS_SERVICE, EMAILJS_TEMPLATE,
+        { to_name: authForm.name, to_email: authForm.email, otp_code: otp },
+        EMAILJS_KEY
+      );
+      setScreen("otp");
+    } catch {
+      setAuthErr("Failed to send OTP email. Please check your email address and try again.");
+    }
+    setOtpLoading(false);
   }
   function handleOTPVerify() {
     if (otpInput === otpSent) { setAuthErr(""); setScreen("secQ"); }
@@ -493,7 +509,7 @@ export default function App() {
     <div style={{ ...S.wrap, display: "flex", alignItems: "center", justifyContent: "center", height: "100vh" }}>
       <div style={{ textAlign: "center" }}>
         <SunriseIcon size={72} />
-        <div style={{ color: C.muted, marginTop: 14 }}>Loading Virtuous Habit...</div>
+        <div style={{ color: C.muted, marginTop: 14 }}>Loading My Sadbani… 🙏</div>
       </div>
     </div>
   );
@@ -504,7 +520,7 @@ export default function App() {
       <div style={S.wrap}>
         <div style={{ ...S.header, flexDirection: "column", textAlign: "center", padding: "28px 16px 24px", gap: 6 }}>
           <SunriseIcon size={72} />
-          <div style={{ fontSize: 26, fontWeight: 800, letterSpacing: -0.5, marginTop: 8 }}>Virtuous Habit</div>
+          <div style={{ fontSize: 26, fontWeight: 800, letterSpacing: -0.5, marginTop: 8 }}>My Sadbani</div>
           <div style={{ fontSize: 13, opacity: 0.85, fontStyle: "italic" }}>Build virtue, one habit at a time ✨</div>
         </div>
         <div style={S.card}>
@@ -526,8 +542,8 @@ export default function App() {
             <input style={S.input} type="password" placeholder="Repeat password" value={authForm.confirmPw} onChange={e => setAuthForm(p => ({ ...p, confirmPw: e.target.value }))} />
           </>}
           {authErr && <div style={S.err}>⚠️ {authErr}</div>}
-          <button style={{ ...S.btn(), marginTop: 16 }} onClick={isReg ? handleRegisterStep1 : handleLogin}>
-            {isReg ? "Continue → Verify Email" : "Sign In"}
+          <button style={{ ...S.btn(), marginTop: 16 }} onClick={isReg ? handleRegisterStep1 : handleLogin} disabled={otpLoading}>
+            {isReg ? (otpLoading ? "Sending code…" : "Continue → Verify Email") : "Sign In"}
           </button>
         </div>
         {isReg && (
@@ -549,14 +565,16 @@ export default function App() {
         <div style={{ fontSize: 12, opacity: 0.8 }}>Step 1 of 2</div>
       </div>
       <div style={S.card}>
-        <div style={{ fontSize: 13, color: C.muted, marginBottom: 12 }}>A 6-digit OTP has been sent to <b>{authForm.email}</b></div>
-        <div style={{ background: "#FFF9E6", border: "1px solid #F59E0B", borderRadius: 8, padding: "10px 12px", fontSize: 12, color: "#92400E", marginBottom: 12 }}>
-          📌 Demo mode — Your OTP: <b style={{ fontSize: 16 }}>{otpSent}</b>
+        <div style={{ fontSize: 13, color: C.muted, marginBottom: 12 }}>
+          A 6-digit code was sent to <b>{authForm.email}</b>. Check your inbox (and spam folder).
         </div>
-        <span style={S.label}>Enter OTP</span>
+        <div style={{ background: C.primaryLight, border: `1px solid ${C.primary}`, borderRadius: 8, padding: "10px 12px", fontSize: 12, color: C.primary, marginBottom: 12 }}>
+          📧 Enter the code from your email below
+        </div>
+        <span style={S.label}>Enter 6-digit code</span>
         <input style={{ ...S.input, letterSpacing: 8, fontWeight: 700, fontSize: 22, textAlign: "center" }} maxLength={6} placeholder="------" value={otpInput} onChange={e => setOtpInput(e.target.value.replace(/\D/g, ""))} />
         {authErr && <div style={S.err}>⚠️ {authErr}</div>}
-        <button style={{ ...S.btn(), marginTop: 14 }} onClick={handleOTPVerify}>Verify OTP →</button>
+        <button style={{ ...S.btn(), marginTop: 14 }} onClick={handleOTPVerify}>Verify Code →</button>
         <button style={{ ...S.btnOut, width: "100%", marginTop: 10, padding: "10px" }} onClick={() => setScreen("register")}>← Back</button>
       </div>
       {toast && <div style={S.toast}>{toast}</div>}
@@ -647,7 +665,7 @@ export default function App() {
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <SunriseIcon size={36} />
           <div>
-            <div style={{ fontSize: 16, fontWeight: 800 }}>Virtuous Habit</div>
+            <div style={{ fontSize: 16, fontWeight: 800 }}>My Sadbani</div>
             <div style={{ fontSize: 11, opacity: 0.85 }}>Namaste, {user?.name} 🙏</div>
           </div>
         </div>

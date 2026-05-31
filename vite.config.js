@@ -9,8 +9,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['icons/*.png'],
       manifest: {
-        name: 'Virtuous Habit',
-        short_name: 'VirtuousHabit',
+        name: 'My Sadbani',
+        short_name: 'MySadbani',
         description: 'Build virtue, one habit at a time',
         theme_color: '#5B4FCF',
         background_color: '#F7F6FF',
