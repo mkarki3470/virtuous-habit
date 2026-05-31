@@ -398,9 +398,11 @@ export default function App() {
     if (screen === "onboarding") setScreen("dashboard");
   }
 
-  const bmr = profileSaved ? calcBMR(+profile.weight, +profile.height, +profile.age, profile.gender) : null;
+  const weight_kg = profileSaved ? +profile.weight * 0.453592 : 0;
+  const height_cm = profileSaved ? +profile.height * 30.48 : 0;
+  const bmr = profileSaved ? calcBMR(weight_kg, height_cm, +profile.age, profile.gender) : null;
   const tdee = bmr ? calcTDEE(bmr) : null;
-  const bmi = profileSaved ? calcBMI(+profile.weight, +profile.height) : null;
+  const bmi = profileSaved ? calcBMI(weight_kg, height_cm) : null;
   const bi = bmi ? bmiInfo(bmi) : null;
   function calTarget() {
     if (!tdee) return 2000;
@@ -608,7 +610,7 @@ export default function App() {
         <div style={{ fontSize: 12, opacity: 0.8 }}>Help us personalize your plan</div>
       </div>
       <div style={S.card}>
-        {[["Weight (kg)", "weight", "70"], ["Height (cm)", "height", "165"], ["Age", "age", "30"]].map(([lbl, k, ph]) => (
+        {[["Weight (lbs)", "weight", "150"], ["Height (ft)", "height", "5.7"], ["Age", "age", "30"]].map(([lbl, k, ph]) => (
           <div key={k}><span style={S.label}>{lbl}</span><input style={S.input} type="number" placeholder={ph} value={profile[k]} onChange={e => setProfile(p => ({ ...p, [k]: e.target.value }))} /></div>
         ))}
         <span style={S.label}>Gender</span>
@@ -670,10 +672,10 @@ export default function App() {
           <div style={S.card}>
             <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 10 }}>📊 Today's Snapshot</div>
             <div style={{ display: "flex", gap: 6 }}>
-              <div style={S.stat}><div style={{ fontSize: 10, color: C.muted }}>Calories</div><div style={{ fontSize: 18, fontWeight: 800, color: C.primary }}>{totalCal}</div><div style={{ fontSize: 9, color: C.muted }}>/{calTarget()}</div></div>
-              <div style={S.stat}><div style={{ fontSize: 10, color: C.muted }}>Water</div><div style={{ fontSize: 18, fontWeight: 800, color: C.blue }}>{water}</div><div style={{ fontSize: 9, color: C.muted }}>/8 cups</div></div>
-              <div style={S.stat}><div style={{ fontSize: 10, color: C.muted }}>Workout</div><div style={{ fontSize: 18, fontWeight: 800, color: C.accent }}>{exerciseLog.length}</div><div style={{ fontSize: 9, color: C.muted }}>done</div></div>
-              <div style={S.stat}><div style={{ fontSize: 10, color: C.muted }}>Habits</div><div style={{ fontSize: 18, fontWeight: 800, color: C.warn }}>{habitsCount}</div><div style={{ fontSize: 9, color: C.muted }}>/5</div></div>
+              <div style={{ ...S.stat, cursor: "pointer" }} onClick={() => setTab("diet")}><div style={{ fontSize: 10, color: C.muted }}>Calories</div><div style={{ fontSize: 18, fontWeight: 800, color: C.primary }}>{totalCal}</div><div style={{ fontSize: 9, color: C.muted }}>/{calTarget()}</div></div>
+              <div style={{ ...S.stat, cursor: "pointer" }} onClick={() => setTab("journal")}><div style={{ fontSize: 10, color: C.muted }}>Water</div><div style={{ fontSize: 18, fontWeight: 800, color: C.blue }}>{water}</div><div style={{ fontSize: 9, color: C.muted }}>/8 cups</div></div>
+              <div style={{ ...S.stat, cursor: "pointer" }} onClick={() => setTab("exercise")}><div style={{ fontSize: 10, color: C.muted }}>Workout</div><div style={{ fontSize: 18, fontWeight: 800, color: C.accent }}>{exerciseLog.length}</div><div style={{ fontSize: 9, color: C.muted }}>done</div></div>
+              <div style={{ ...S.stat, cursor: "pointer" }} onClick={() => setTab("journal")}><div style={{ fontSize: 10, color: C.muted }}>Habits</div><div style={{ fontSize: 18, fontWeight: 800, color: C.warn }}>{habitsCount}</div><div style={{ fontSize: 9, color: C.muted }}>/5</div></div>
             </div>
             <div style={{ marginTop: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: C.muted }}><span>Calorie Progress</span><span>{pct}%</span></div>
@@ -692,6 +694,9 @@ export default function App() {
               <span style={{ fontSize: 13 }}>{icon} {lbl}</span>
             </div>
           ))}
+        </div>
+        <div style={{ display: "flex", justifyContent: "flex-end", padding: "4px 12px 8px" }}>
+          <button style={S.btnSm(C.primary)} onClick={() => setTab("diet")}>Diet →</button>
         </div>
       </>}
 
@@ -748,6 +753,9 @@ export default function App() {
             <div style={{ fontSize: 14, fontWeight: 700, color: C.primary, marginTop: 8 }}>Total: {totalCal} kcal · {totalProtein}g protein</div>
           </div>
         )}
+        <div style={{ display: "flex", justifyContent: "flex-end", padding: "4px 12px 8px" }}>
+          <button style={S.btnSm(C.primary)} onClick={() => setTab("exercise")}>Exercise →</button>
+        </div>
       </>}
 
       {/* EXERCISE */}
@@ -906,6 +914,9 @@ export default function App() {
             </div>
           )}
         </>}
+        <div style={{ display: "flex", justifyContent: "flex-end", padding: "4px 12px 8px" }}>
+          <button style={S.btnSm(C.primary)} onClick={() => setTab("journal")}>Journal →</button>
+        </div>
       </>}
 
       {/* JOURNAL */}
@@ -1008,6 +1019,9 @@ export default function App() {
           <div style={{ fontSize: 13, color: "#065F46", fontWeight: 600 }}>🌟 Day Score: {Math.round(((habitsCount * 20) + (water >= 8 ? 20 : water * 2.5) + (exerciseLog.length > 0 ? 20 : 0) + (notes.length > 20 ? 20 : 0) + (mood ? 20 : 0)) / 5)}%</div>
           <div style={{ fontSize: 11, color: "#065F46", marginTop: 4 }}>Habits · Water · Exercise · Reflection · Mood</div>
         </div>
+        <div style={{ display: "flex", justifyContent: "flex-end", padding: "4px 12px 8px" }}>
+          <button style={S.btnSm(C.primary)} onClick={() => setTab("profile")}>My Profile →</button>
+        </div>
       </>}
 
       {/* PROFILE */}
@@ -1019,7 +1033,7 @@ export default function App() {
           </div>
           {profileSaved && (
             <div style={{ display: "flex", gap: 6 }}>
-              {[["Weight", profile.weight + "kg"], ["Height", profile.height + "cm"], ["Age", profile.age + "yrs"]].map(([lbl, val]) => (
+              {[["Weight", profile.weight + " lbs"], ["Height", profile.height + " ft"], ["Age", profile.age + " yrs"]].map(([lbl, val]) => (
                 <div key={lbl} style={S.stat}><div style={{ fontSize: 10, color: C.muted }}>{lbl}</div><div style={{ fontSize: 15, fontWeight: 800 }}>{val}</div></div>
               ))}
             </div>
@@ -1043,7 +1057,7 @@ export default function App() {
             <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 8 }}>⚖️ Body Weight History</div>
             {weightLog.slice(-5).reverse().map((w, i) => (
               <div key={i} style={{ display: "flex", justifyContent: "space-between", fontSize: 13, padding: "5px 0", borderBottom: "0.5px solid #F0EEF9" }}>
-                <span style={{ color: C.muted }}>{w.date}</span><span style={{ fontWeight: 700 }}>{w.weight} kg</span>
+                <span style={{ color: C.muted }}>{w.date}</span><span style={{ fontWeight: 700 }}>{w.weight} lbs</span>
               </div>
             ))}
           </div>
@@ -1051,7 +1065,7 @@ export default function App() {
 
         <div style={S.card}>
           <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 10 }}>✏️ Update Profile</div>
-          {[["Weight (kg)", "weight"], ["Height (cm)", "height"], ["Age", "age"]].map(([lbl, k]) => (
+          {[["Weight (lbs)", "weight"], ["Height (ft)", "height"], ["Age", "age"]].map(([lbl, k]) => (
             <div key={k}><span style={S.label}>{lbl}</span><input style={S.input} type="number" value={profile[k]} onChange={e => setProfile(p => ({ ...p, [k]: e.target.value }))} /></div>
           ))}
           <span style={S.label}>Goal</span>
