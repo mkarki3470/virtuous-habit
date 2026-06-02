@@ -9,41 +9,48 @@ const C = {
 
 const EXERCISES = {
   push: [
-    { name: "Push-ups", sets: "3×15", muscle: "Chest, Triceps", cal: 60 },
-    { name: "Incline Push-ups", sets: "3×12", muscle: "Upper Chest", cal: 50 },
+    { name: "Barbell Bench Press", sets: "4×8", muscle: "Chest, Triceps", cal: 85 },
     { name: "Dumbbell Bench Press", sets: "4×10", muscle: "Chest, Triceps", cal: 80 },
-    { name: "Overhead Press", sets: "3×10", muscle: "Shoulders, Triceps", cal: 70 },
+    { name: "Chest Flyes (Cable)", sets: "3×12", muscle: "Chest", cal: 60 },
+    { name: "Incline Push-ups", sets: "3×12", muscle: "Upper Chest", cal: 50 },
+    { name: "Push-ups", sets: "3×15", muscle: "Chest, Triceps", cal: 60 },
+    { name: "Tricep Pushdown (Cable)", sets: "3×12", muscle: "Triceps", cal: 50 },
+    { name: "Overhead Tricep Extension", sets: "3×12", muscle: "Triceps", cal: 55 },
     { name: "Tricep Dips", sets: "3×12", muscle: "Triceps", cal: 55 },
     { name: "Diamond Push-ups", sets: "3×10", muscle: "Triceps, Inner Chest", cal: 60 },
-    { name: "Pike Push-ups", sets: "3×10", muscle: "Shoulders", cal: 50 },
-    { name: "Chest Flyes", sets: "3×12", muscle: "Chest", cal: 55 },
   ],
   pull: [
-    { name: "Pull-ups", sets: "3×8", muscle: "Back, Biceps", cal: 80 },
-    { name: "Dumbbell Rows", sets: "3×12", muscle: "Upper Back", cal: 70 },
-    { name: "Bicep Curls", sets: "3×15", muscle: "Biceps", cal: 50 },
+    { name: "Deadlift", sets: "3×8", muscle: "Lower Back, Hamstrings, Glutes", cal: 120 },
+    { name: "Barbell Row", sets: "3×10", muscle: "Upper Back, Biceps", cal: 85 },
     { name: "Lat Pulldown", sets: "3×12", muscle: "Lats", cal: 75 },
-    { name: "Hammer Curls", sets: "3×12", muscle: "Biceps, Forearms", cal: 50 },
     { name: "Seated Cable Row", sets: "3×12", muscle: "Mid Back", cal: 70 },
+    { name: "Dumbbell Rows", sets: "3×12", muscle: "Upper Back", cal: 70 },
+    { name: "Rear Delt Fly (Cable)", sets: "3×15", muscle: "Rear Delts, Upper Back", cal: 45 },
     { name: "Face Pulls", sets: "3×15", muscle: "Rear Delts", cal: 45 },
-    { name: "Chin-ups", sets: "3×8", muscle: "Biceps, Back", cal: 80 },
+    { name: "Bicep Curl (Barbell)", sets: "3×12", muscle: "Biceps", cal: 55 },
+    { name: "Bicep Curl (Dumbbell)", sets: "3×15", muscle: "Biceps", cal: 50 },
+    { name: "Hammer Curls", sets: "3×12", muscle: "Biceps, Forearms", cal: 50 },
+    { name: "Pull-ups", sets: "3×8", muscle: "Back, Biceps", cal: 80 },
   ],
   legs: [
-    { name: "Squats", sets: "4×15", muscle: "Quads, Glutes", cal: 120 },
-    { name: "Lunges", sets: "3×12 each", muscle: "Quads, Hamstrings", cal: 100 },
+    { name: "Squat (Barbell)", sets: "4×12", muscle: "Quads, Glutes", cal: 130 },
+    { name: "Dumbbell Squat", sets: "4×12", muscle: "Quads, Glutes", cal: 110 },
+    { name: "Leg Press", sets: "4×12", muscle: "Quads, Hamstrings", cal: 110 },
+    { name: "Leg Extension", sets: "3×12", muscle: "Quads", cal: 60 },
+    { name: "Hamstring Curl", sets: "3×12", muscle: "Hamstrings", cal: 65 },
+    { name: "Walking Lunges", sets: "3×12 each", muscle: "Quads, Glutes", cal: 100 },
+    { name: "Calf Raises", sets: "4×20", muscle: "Calves", cal: 50 },
+    { name: "Inner Thigh (Adductor)", sets: "3×15", muscle: "Inner Thighs", cal: 50 },
+    { name: "Outer Thigh (Abductor)", sets: "3×15", muscle: "Outer Thighs", cal: 50 },
     { name: "Romanian Deadlift", sets: "3×12", muscle: "Hamstrings, Glutes", cal: 110 },
     { name: "Glute Bridge", sets: "3×20", muscle: "Glutes", cal: 70 },
-    { name: "Calf Raises", sets: "4×20", muscle: "Calves", cal: 50 },
-    { name: "Step-ups", sets: "3×12 each", muscle: "Quads, Glutes", cal: 90 },
-    { name: "Sumo Squats", sets: "3×15", muscle: "Inner Thighs", cal: 100 },
-    { name: "Leg Press", sets: "4×12", muscle: "Quads, Hamstrings", cal: 110 },
   ],
   shoulders: [
+    { name: "Shoulder Press (DB)", sets: "4×10", muscle: "All Delts", cal: 70 },
     { name: "Arnold Press", sets: "3×12", muscle: "All Delts", cal: 65 },
     { name: "Lateral Raises", sets: "3×15", muscle: "Side Delts", cal: 45 },
     { name: "Front Raises", sets: "3×12", muscle: "Front Delts", cal: 45 },
     { name: "Upright Rows", sets: "3×12", muscle: "Traps, Delts", cal: 60 },
-    { name: "Shoulder Press (DB)", sets: "4×10", muscle: "All Delts", cal: 70 },
     { name: "Rear Delt Flyes", sets: "3×15", muscle: "Rear Delts", cal: 45 },
     { name: "Shrugs", sets: "3×20", muscle: "Traps", cal: 40 },
     { name: "Cable Lateral Raise", sets: "3×15", muscle: "Side Delts", cal: 45 },
@@ -57,6 +64,8 @@ const EXERCISES = {
     { name: "Bicycle Crunches", sets: "3×20", muscle: "Obliques", cal: 45 },
     { name: "Dead Bug", sets: "3×10 each", muscle: "Deep Core", cal: 35 },
     { name: "Side Plank", sets: "3×45 sec", muscle: "Obliques", cal: 40 },
+    { name: "Cable Crunch", sets: "3×15", muscle: "Upper Abs", cal: 40 },
+    { name: "Hanging Leg Raises", sets: "3×12", muscle: "Lower Abs", cal: 45 },
   ],
 };
 
@@ -111,38 +120,115 @@ const YOGA = {
   ],
 };
 
-const NEPALI_FOODS = [
-  { name: "Dal Bhat (1 plate)", cal: 450, protein: 18, carbs: 72, fat: 8 },
-  { name: "Sel Roti (2 pcs)", cal: 280, protein: 5, carbs: 52, fat: 7 },
-  { name: "Momo (8 pcs, veg)", cal: 300, protein: 12, carbs: 42, fat: 8 },
-  { name: "Momo (8 pcs, chicken)", cal: 360, protein: 22, carbs: 40, fat: 10 },
-  { name: "Gundruk Soup", cal: 90, protein: 5, carbs: 12, fat: 2 },
-  { name: "Thukpa (1 bowl)", cal: 320, protein: 14, carbs: 48, fat: 7 },
-  { name: "Chatamari", cal: 250, protein: 10, carbs: 38, fat: 6 },
-  { name: "Aloo Tama", cal: 180, protein: 6, carbs: 28, fat: 5 },
-  { name: "Yomari (1 pc)", cal: 130, protein: 3, carbs: 25, fat: 3 },
-  { name: "Juju Dhau (1 cup)", cal: 160, protein: 8, carbs: 22, fat: 5 },
-  { name: "Dhido (1 bowl)", cal: 290, protein: 8, carbs: 58, fat: 3 },
-  { name: "Bara (2 pcs)", cal: 220, protein: 10, carbs: 32, fat: 6 },
-  { name: "Poha", cal: 250, protein: 6, carbs: 48, fat: 4 },
-  { name: "Idli (3) + Sambar", cal: 220, protein: 9, carbs: 42, fat: 3 },
-  { name: "Dal + 2 Roti", cal: 380, protein: 16, carbs: 62, fat: 7 },
-  { name: "Rajma Chawal", cal: 420, protein: 18, carbs: 72, fat: 6 },
-  { name: "Palak Paneer + Roti", cal: 430, protein: 18, carbs: 44, fat: 18 },
-  { name: "Chole Bhature", cal: 520, protein: 16, carbs: 74, fat: 18 },
-  { name: "Upma", cal: 230, protein: 6, carbs: 40, fat: 6 },
-  { name: "Khichdi + Curd", cal: 350, protein: 14, carbs: 56, fat: 7 },
-  { name: "Oats Porridge", cal: 180, protein: 7, carbs: 32, fat: 4 },
-  { name: "Moong Dal Chilla", cal: 200, protein: 12, carbs: 28, fat: 4 },
-  { name: "Banana (1)", cal: 90, protein: 1, carbs: 23, fat: 0 },
-  { name: "Apple (1)", cal: 80, protein: 0, carbs: 21, fat: 0 },
-  { name: "Boiled Egg (1)", cal: 78, protein: 6, carbs: 1, fat: 5 },
-  { name: "Roasted Chana (30g)", cal: 120, protein: 7, carbs: 17, fat: 3 },
-  { name: "Makhana (1 cup)", cal: 100, protein: 4, carbs: 18, fat: 1 },
-  { name: "Buttermilk / Chaas", cal: 60, protein: 3, carbs: 7, fat: 2 },
-  { name: "Mixed Nuts (30g)", cal: 180, protein: 5, carbs: 6, fat: 16 },
-  { name: "Paneer (100g)", cal: 265, protein: 18, carbs: 4, fat: 20 },
-];
+const FOOD_DB = {
+  breakfast: [
+    { name: "Egg White (1 large)", cal: 17, protein: 4, carbs: 0, fat: 0 },
+    { name: "Whole Egg (1)", cal: 78, protein: 6, carbs: 1, fat: 5 },
+    { name: "Boiled Egg (1)", cal: 78, protein: 6, carbs: 1, fat: 5 },
+    { name: "Oats, dry (50g)", cal: 190, protein: 6, carbs: 34, fat: 3 },
+    { name: "Muesli (50g)", cal: 180, protein: 5, carbs: 33, fat: 3 },
+    { name: "Weetabix (60g / 2 biscuits)", cal: 210, protein: 6, carbs: 43, fat: 1 },
+    { name: "Protein Powder (1 scoop 30g)", cal: 120, protein: 25, carbs: 3, fat: 2 },
+    { name: "Protein Powder (0.5 scoop)", cal: 60, protein: 12, carbs: 2, fat: 1 },
+    { name: "Whole Milk (200ml)", cal: 120, protein: 6, carbs: 10, fat: 7 },
+    { name: "Low Fat Milk (200ml)", cal: 80, protein: 7, carbs: 10, fat: 2 },
+    { name: "Almond Milk (200ml)", cal: 50, protein: 1, carbs: 4, fat: 2 },
+    { name: "Mixed Nuts (8g)", cal: 50, protein: 1, carbs: 2, fat: 4 },
+    { name: "Mixed Nuts (30g)", cal: 180, protein: 5, carbs: 6, fat: 16 },
+    { name: "Soaked Chana (80g)", cal: 200, protein: 12, carbs: 33, fat: 2 },
+    { name: "Green Moong Salad (80g)", cal: 140, protein: 10, carbs: 24, fat: 1 },
+    { name: "Brown Bread (1 slice)", cal: 80, protein: 4, carbs: 15, fat: 1 },
+    { name: "Multigrain Bread (1 slice)", cal: 90, protein: 4, carbs: 17, fat: 2 },
+    { name: "Strawberries (100g)", cal: 33, protein: 1, carbs: 8, fat: 0 },
+    { name: "Blueberries (100g)", cal: 57, protein: 1, carbs: 14, fat: 0 },
+    { name: "Banana (1 medium)", cal: 90, protein: 1, carbs: 23, fat: 0 },
+    { name: "Apple (1 medium)", cal: 80, protein: 0, carbs: 21, fat: 0 },
+    { name: "Mixed Fruits Bowl (200g)", cal: 120, protein: 1, carbs: 30, fat: 0 },
+    { name: "Avocado (100g)", cal: 160, protein: 2, carbs: 9, fat: 15 },
+    { name: "Apple Cider Vinegar (1 tsp)", cal: 1, protein: 0, carbs: 0, fat: 0 },
+    { name: "Black Coffee (1 cup)", cal: 2, protein: 0, carbs: 0, fat: 0 },
+  ],
+  lunch: [
+    { name: "Brown Rice, cooked (130g)", cal: 170, protein: 4, carbs: 37, fat: 1 },
+    { name: "White Rice, cooked (130g)", cal: 170, protein: 3, carbs: 38, fat: 0 },
+    { name: "Quinoa, cooked (130g)", cal: 170, protein: 6, carbs: 30, fat: 3 },
+    { name: "Whole Wheat Roti (1)", cal: 80, protein: 3, carbs: 16, fat: 1 },
+    { name: "Oats Roti (1)", cal: 90, protein: 4, carbs: 17, fat: 2 },
+    { name: "Chicken Curry (120g)", cal: 220, protein: 28, carbs: 5, fat: 10 },
+    { name: "Chicken Breast, grilled (130g)", cal: 200, protein: 38, carbs: 0, fat: 4 },
+    { name: "Chicken Wrap (1 wrap, 75g chicken)", cal: 240, protein: 22, carbs: 25, fat: 6 },
+    { name: "Fish Curry (130g)", cal: 180, protein: 26, carbs: 3, fat: 7 },
+    { name: "Paneer (120g)", cal: 320, protein: 22, carbs: 5, fat: 24 },
+    { name: "Tofu (150g)", cal: 120, protein: 14, carbs: 4, fat: 7 },
+    { name: "Soya Chunks, dry (30g)", cal: 100, protein: 17, carbs: 6, fat: 1 },
+    { name: "Dal / Lentils, cooked (120g)", cal: 130, protein: 8, carbs: 22, fat: 1 },
+    { name: "Rajma, cooked (140g)", cal: 160, protein: 10, carbs: 28, fat: 1 },
+    { name: "Chana Stir Fry (100g)", cal: 140, protein: 8, carbs: 22, fat: 2 },
+    { name: "Wheat Pasta, boiled (120g)", cal: 160, protein: 6, carbs: 34, fat: 1 },
+    { name: "Wheat Spaghetti, boiled (120g)", cal: 155, protein: 5, carbs: 33, fat: 1 },
+    { name: "Stir Fry Veggies (140g)", cal: 60, protein: 2, carbs: 12, fat: 1 },
+    { name: "Mixed Veggies (120g)", cal: 50, protein: 2, carbs: 10, fat: 0 },
+    { name: "Salad — cucumber/carrot/beetroot (100g)", cal: 35, protein: 1, carbs: 7, fat: 0 },
+    { name: "Dahi / Plain Yogurt (100g)", cal: 80, protein: 4, carbs: 8, fat: 4 },
+    { name: "Raita (100g)", cal: 70, protein: 3, carbs: 7, fat: 3 },
+    { name: "Chicken Biryani (140g chicken + 120g rice)", cal: 450, protein: 36, carbs: 52, fat: 10 },
+    { name: "Egg Whites Curry (2 whites)", cal: 40, protein: 8, carbs: 1, fat: 0 },
+  ],
+  snack: [
+    { name: "Chicken Salad (100g)", cal: 160, protein: 28, carbs: 3, fat: 4 },
+    { name: "Egg Sandwich (1 bread + 2 eggs + 1 white)", cal: 280, protein: 22, carbs: 20, fat: 10 },
+    { name: "Chicken Soup (200ml)", cal: 100, protein: 14, carbs: 5, fat: 2 },
+    { name: "Beaten Rice / Chiura (30g dry)", cal: 110, protein: 2, carbs: 24, fat: 1 },
+    { name: "Egg Roll (3 egg whites)", cal: 100, protein: 12, carbs: 10, fat: 1 },
+    { name: "Fruit + Yogurt + Protein (200g+100g+0.5 scoop)", cal: 280, protein: 16, carbs: 45, fat: 3 },
+    { name: "Banana Protein Smoothie (milk+banana+oats+protein)", cal: 360, protein: 30, carbs: 52, fat: 5 },
+    { name: "Avocado Protein Smoothie (avocado+milk+protein)", cal: 300, protein: 25, carbs: 20, fat: 14 },
+    { name: "Roasted Chana (30g)", cal: 120, protein: 7, carbs: 17, fat: 3 },
+    { name: "Makhana (1 cup)", cal: 100, protein: 4, carbs: 18, fat: 1 },
+    { name: "Buttermilk / Chaas (1 glass)", cal: 60, protein: 3, carbs: 7, fat: 2 },
+  ],
+  dinner: [
+    { name: "Grilled Chicken (140g)", cal: 220, protein: 42, carbs: 0, fat: 5 },
+    { name: "Grilled Fish (140g)", cal: 160, protein: 30, carbs: 0, fat: 4 },
+    { name: "Egg Bhurji (100g)", cal: 180, protein: 14, carbs: 4, fat: 12 },
+    { name: "Grilled Mushroom (120g)", cal: 30, protein: 3, carbs: 4, fat: 0 },
+    { name: "Fried Rice (150g)", cal: 200, protein: 4, carbs: 40, fat: 3 },
+    { name: "Poha / Chiura (40g dry)", cal: 145, protein: 3, carbs: 32, fat: 1 },
+    { name: "Soya Chunks Pulao (30g soya + 130g brown rice)", cal: 350, protein: 22, carbs: 62, fat: 3 },
+    { name: "Wheat Noodles / Thukpa (120g boiled)", cal: 200, protein: 7, carbs: 42, fat: 1 },
+    { name: "Wheat Momo (8 pieces)", cal: 320, protein: 16, carbs: 52, fat: 6 },
+    { name: "Veg Roll (2 roti + 30g soya)", cal: 320, protein: 16, carbs: 52, fat: 6 },
+    { name: "Brown Rice, cooked (120g)", cal: 155, protein: 3, carbs: 34, fat: 1 },
+    { name: "Whole Wheat Roti (2)", cal: 160, protein: 6, carbs: 32, fat: 2 },
+    { name: "Dal / Lentils, cooked (70g)", cal: 75, protein: 5, carbs: 13, fat: 0 },
+    { name: "Rajma, cooked (40g dry → cooked)", cal: 130, protein: 8, carbs: 23, fat: 1 },
+  ],
+  nepali: [
+    { name: "Dal Bhat (1 plate)", cal: 450, protein: 18, carbs: 72, fat: 8 },
+    { name: "Sel Roti (2 pcs)", cal: 280, protein: 5, carbs: 52, fat: 7 },
+    { name: "Momo (8 pcs, veg)", cal: 300, protein: 12, carbs: 42, fat: 8 },
+    { name: "Momo (8 pcs, chicken)", cal: 360, protein: 22, carbs: 40, fat: 10 },
+    { name: "Gundruk Soup", cal: 90, protein: 5, carbs: 12, fat: 2 },
+    { name: "Thukpa (1 bowl)", cal: 320, protein: 14, carbs: 48, fat: 7 },
+    { name: "Chatamari", cal: 250, protein: 10, carbs: 38, fat: 6 },
+    { name: "Aloo Tama", cal: 180, protein: 6, carbs: 28, fat: 5 },
+    { name: "Yomari (1 pc)", cal: 130, protein: 3, carbs: 25, fat: 3 },
+    { name: "Juju Dhau (1 cup)", cal: 160, protein: 8, carbs: 22, fat: 5 },
+    { name: "Dhido (1 bowl)", cal: 290, protein: 8, carbs: 58, fat: 3 },
+    { name: "Bara (2 pcs)", cal: 220, protein: 10, carbs: 32, fat: 6 },
+    { name: "Poha (traditional)", cal: 250, protein: 6, carbs: 48, fat: 4 },
+    { name: "Idli (3) + Sambar", cal: 220, protein: 9, carbs: 42, fat: 3 },
+    { name: "Dal + 2 Roti", cal: 380, protein: 16, carbs: 62, fat: 7 },
+    { name: "Rajma Chawal", cal: 420, protein: 18, carbs: 72, fat: 6 },
+    { name: "Palak Paneer + Roti", cal: 430, protein: 18, carbs: 44, fat: 18 },
+    { name: "Chole Bhature", cal: 520, protein: 16, carbs: 74, fat: 18 },
+    { name: "Upma", cal: 230, protein: 6, carbs: 40, fat: 6 },
+    { name: "Khichdi + Curd", cal: 350, protein: 14, carbs: 56, fat: 7 },
+    { name: "Oats Porridge", cal: 180, protein: 7, carbs: 32, fat: 4 },
+    { name: "Moong Dal Chilla", cal: 200, protein: 12, carbs: 28, fat: 4 },
+    { name: "Paneer (100g)", cal: 265, protein: 18, carbs: 4, fat: 20 },
+  ],
+};
 
 const SECURITY_QUESTIONS = [
   "What was your first pet's name?",
@@ -257,8 +343,10 @@ export default function App() {
   const [foodQ, setFoodQ] = useState("");
   const [foodResults, setFoodResults] = useState([]);
   const [foodLoading, setFoodLoading] = useState(false);
-  const [foodTab, setFoodTab] = useState("nepali");
+  const [foodTab, setFoodTab] = useState("breakfast");
   const [foodErr, setFoodErr] = useState("");
+  const [dietDate, setDietDate] = useState(today);
+  const [exHistDate, setExHistDate] = useState(today);
 
   const [exCat, setExCat] = useState("push");
   const [yogaCat, setYogaCat] = useState("flexibility");
@@ -271,6 +359,7 @@ export default function App() {
   const [logSets, setLogSets] = useState("");
 
   const [reportExercise, setReportExercise] = useState(null);
+  const [journalDate, setJournalDate] = useState(today);
 
   useEffect(() => {
     const accs = storageGet("accounts");
@@ -299,6 +388,46 @@ export default function App() {
       storageSet(`exHistory:${user.username}`, exHistory);
     }
   }, [exHistory]);
+
+  const isViewingToday = journalDate === today;
+  const journalViewData = isViewingToday ? dailyData : (storageGet(`daily:${user?.username}:${journalDate}`) || {});
+  function jGet(key, def) {
+    return journalViewData[key] !== undefined ? journalViewData[key] : def;
+  }
+  function navigateJournalDate(dir) {
+    const d = new Date(journalDate + "T12:00:00");
+    d.setDate(d.getDate() + dir);
+    const newKey = d.toISOString().split("T")[0];
+    if (newKey <= today) setJournalDate(newKey);
+  }
+  function formatJournalDate(dk) {
+    const d = new Date(dk + "T12:00:00");
+    return d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
+  }
+  function navigateDietDate(dir) {
+    const d = new Date(dietDate + "T12:00:00"); d.setDate(d.getDate() + dir);
+    const k = d.toISOString().split("T")[0]; if (k <= today) setDietDate(k);
+  }
+  function navigateExHistDate(dir) {
+    const d = new Date(exHistDate + "T12:00:00"); d.setDate(d.getDate() + dir);
+    const k = d.toISOString().split("T")[0]; if (k <= today) setExHistDate(k);
+  }
+  const isDietToday = dietDate === today;
+  const dietViewData = isDietToday ? dailyData : (storageGet(`daily:${user?.username}:${dietDate}`) || {});
+  const dietMeals = dietViewData.meals || [];
+  const dietTotalCal = dietMeals.reduce((s, m) => s + m.cal, 0);
+  const dietTotalProtein = dietMeals.reduce((s, m) => s + (m.protein || 0), 0);
+  const exHistDayData = storageGet(`daily:${user?.username}:${exHistDate}`) || {};
+  const exHistDayLog = exHistDayData.exerciseLog || [];
+
+  const jMeals = jGet("meals", []);
+  const jHabits = jGet("habits", {});
+  const jWater = jGet("water", 0);
+  const jExLog = jGet("exerciseLog", []);
+  const jNotes = jGet("notes", "");
+  const jMood = jGet("mood", null);
+  const jHabitsCount = Object.values(jHabits).filter(Boolean).length;
+  const jTotalCal = jMeals.reduce((s, m) => s + m.cal, 0);
 
   function showToast(msg) {
     setToast(msg);
@@ -670,15 +799,17 @@ export default function App() {
       {tab === "diet" && <>
         {profileSaved && <div style={{ ...S.card, background: C.primaryLight }}>
           <div style={{ fontSize: 13, fontWeight: 600 }}>🎯 Target: <span style={{ color: C.primary }}>{calTarget()} kcal/day</span></div>
-          <div style={{ fontSize: 12, color: C.muted, marginTop: 4 }}>Eaten: <b style={{ color: C.accent }}>{totalCal} kcal</b> · Protein: <b>{totalProtein}g</b></div>
+          <div style={{ fontSize: 12, color: C.muted, marginTop: 4 }}>Today eaten: <b style={{ color: C.accent }}>{totalCal} kcal</b> · Protein: <b>{totalProtein}g</b></div>
         </div>}
 
         <div style={S.card}>
-          <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-            {[["nepali", "🇳🇵 Nepali / Indian"], ["search", "🔍 Search Foods"]].map(([t, lbl]) => <button key={t} style={S.pill(foodTab === t)} onClick={() => setFoodTab(t)}>{lbl}</button>)}
+          <div style={{ overflowX: "auto", display: "flex", gap: 6, marginBottom: 12, paddingBottom: 4 }}>
+            {[["breakfast","🌅 Breakfast"],["lunch","🍽️ Lunch"],["snack","🥪 Snack"],["dinner","🌙 Dinner"],["nepali","🇳🇵 Nepali"],["search","🔍 Search"]].map(([t,lbl]) => (
+              <button key={t} style={{ ...S.pill(foodTab===t), flexShrink: 0 }} onClick={() => setFoodTab(t)}>{lbl}</button>
+            ))}
           </div>
 
-          {foodTab === "nepali" && NEPALI_FOODS.map((f, i) => (
+          {foodTab !== "search" && (FOOD_DB[foodTab] || []).map((f, i) => (
             <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderBottom: "0.5px solid #F0EEF9" }}>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 13, fontWeight: 500 }}>{f.name}</div>
@@ -707,20 +838,30 @@ export default function App() {
           </>}
         </div>
 
-        {meals.length > 0 && (
-          <div style={S.card}>
-            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 8 }}>Today's Food Log 📝 ({meals.length})</div>
-            {meals.map((m, i) => (
+        {/* Food log with date navigation */}
+        <div style={S.card}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+            <button style={{ ...S.btnSm(C.primary), padding: "5px 10px" }} onClick={() => navigateDietDate(-1)}>‹ Prev</button>
+            <div style={{ textAlign: "center" }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: C.primary }}>📝 {isDietToday ? "Today's Log" : formatJournalDate(dietDate)}</div>
+              {!isDietToday && <div style={{ fontSize: 10, color: C.warn, fontWeight: 600 }}>Past day — read only</div>}
+            </div>
+            <button style={{ ...S.btnSm(isDietToday ? "#CCC" : C.primary), padding: "5px 10px" }} onClick={() => navigateDietDate(1)} disabled={isDietToday}>Next ›</button>
+          </div>
+          {!isDietToday && <button style={{ ...S.btnSm(C.accent), width: "100%", marginBottom: 10 }} onClick={() => setDietDate(today)}>Jump to Today</button>}
+          {dietMeals.length === 0
+            ? <div style={{ fontSize: 13, color: C.muted, textAlign: "center", padding: 10 }}>{isDietToday ? "No meals logged yet. Pick from the categories above." : "No meals logged on this day."}</div>
+            : dietMeals.map((m, i) => (
               <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "6px 0", borderBottom: "0.5px solid #F0EEF9" }}>
                 <div style={{ fontSize: 13 }}>{m.name} <span style={{ color: C.muted, fontSize: 11 }}>({m.cal} kcal)</span></div>
-                <span style={{ color: C.danger, cursor: "pointer", fontSize: 22, lineHeight: 1, padding: "0 8px" }} onClick={() => removeM(i)}>×</span>
+                {isDietToday && <span style={{ color: C.danger, cursor: "pointer", fontSize: 22, lineHeight: 1, padding: "0 8px" }} onClick={() => removeM(i)}>×</span>}
               </div>
-            ))}
-            <div style={{ fontSize: 14, fontWeight: 700, color: C.primary, marginTop: 8 }}>Total: {totalCal} kcal · {totalProtein}g protein</div>
-          </div>
-        )}
+            ))
+          }
+          {dietMeals.length > 0 && <div style={{ fontSize: 14, fontWeight: 700, color: C.primary, marginTop: 8 }}>Total: {dietTotalCal} kcal · {dietTotalProtein}g protein</div>}
+        </div>
         <div style={{ display: "flex", justifyContent: "flex-end", padding: "4px 12px 8px" }}>
-          <button style={S.btnSm(C.primary)} onClick={() => setTab("exercise")}>Exercise →</button>
+          <button style={S.btnSm(C.primary)} onClick={() => setTab("exercise")}>व्यायाम →</button>
         </div>
       </>}
 
@@ -734,14 +875,16 @@ export default function App() {
 
         {exTab === "exercise" && <>
           <div style={{ padding: "0 12px", display: "flex", gap: 6, flexWrap: "wrap" }}>
-            {["push", "pull", "legs", "shoulders", "core"].map(c => (
-              <button key={c} style={S.pill(exCat === c)} onClick={() => setExCat(c)}>{c.charAt(0).toUpperCase() + c.slice(1)}</button>
+            {[["push","Chest & Tri"], ["pull","Back & Bi"], ["legs","Legs"], ["shoulders","Shoulders"], ["core","Abs"]].map(([c, lbl]) => (
+              <button key={c} style={S.pill(exCat === c)} onClick={() => setExCat(c)}>{lbl}</button>
             ))}
           </div>
           <div style={S.card}>
-            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 4, textTransform: "capitalize" }}>{exCat} Day Workout</div>
+            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 4 }}>
+              {exCat === "push" ? "Chest & Triceps" : exCat === "pull" ? "Back & Biceps" : exCat === "legs" ? "Legs" : exCat === "shoulders" ? "Shoulders" : "Abs"} Workout
+            </div>
             <div style={{ fontSize: 12, color: C.muted, marginBottom: 10 }}>
-              {exCat === "push" ? "Chest, Shoulders & Triceps" : exCat === "pull" ? "Back & Biceps" : exCat === "legs" ? "Quads, Hamstrings & Glutes" : exCat === "shoulders" ? "Deltoid Focus" : "Abs, Obliques & Stability"}
+              {exCat === "push" ? "Chest, Triceps & Upper Body" : exCat === "pull" ? "Back, Biceps & Deadlift" : exCat === "legs" ? "Quads, Hamstrings, Glutes & More" : exCat === "shoulders" ? "Deltoid Focus" : "Abs, Obliques & Core Stability"}
             </div>
             {EXERCISES[exCat].map((ex, i) => {
               const history = exHistory.filter(e => e.name === ex.name && e.weight);
@@ -875,10 +1018,39 @@ export default function App() {
               <div style={{ display: "flex", gap: 6 }}>
                 <div style={S.stat}><div style={{ fontSize: 10, color: C.muted }}>Workouts</div><div style={{ fontSize: 20, fontWeight: 800, color: C.primary }}>{exHistory.length}</div></div>
                 <div style={S.stat}><div style={{ fontSize: 10, color: C.muted }}>Exercises</div><div style={{ fontSize: 20, fontWeight: 800, color: C.accent }}>{allExHistory.length}</div></div>
-                <div style={S.stat}><div style={{ fontSize: 10, color: C.muted }}>Total kg</div><div style={{ fontSize: 20, fontWeight: 800, color: C.warn }}>{Math.round(exHistory.reduce((s, e) => s + ((e.weight || 0) * (e.reps || 0) * (e.setsDone || 1)), 0))}</div></div>
+                <div style={S.stat}><div style={{ fontSize: 10, color: C.muted }}>Total lbs</div><div style={{ fontSize: 20, fontWeight: 800, color: C.warn }}>{Math.round(exHistory.reduce((s, e) => s + ((e.weight || 0) * (e.reps || 0) * (e.setsDone || 1)), 0))}</div></div>
               </div>
             </div>
           )}
+
+          {/* Daily exercise log by date */}
+          <div style={S.card}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+              <button style={{ ...S.btnSm(C.primary), padding: "5px 10px" }} onClick={() => navigateExHistDate(-1)}>‹ Prev</button>
+              <div style={{ textAlign: "center" }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: C.primary }}>📅 {exHistDate === today ? "Today" : formatJournalDate(exHistDate)}</div>
+                <div style={{ fontSize: 10, color: C.muted }}>Daily Exercise Log</div>
+              </div>
+              <button style={{ ...S.btnSm(exHistDate === today ? "#CCC" : C.primary), padding: "5px 10px" }} onClick={() => navigateExHistDate(1)} disabled={exHistDate === today}>Next ›</button>
+            </div>
+            {exHistDate !== today && <button style={{ ...S.btnSm(C.accent), width: "100%", marginBottom: 10 }} onClick={() => setExHistDate(today)}>Jump to Today</button>}
+            {exHistDayLog.length === 0
+              ? <div style={{ fontSize: 13, color: C.muted, textAlign: "center", padding: 10 }}>No exercises logged on this day.</div>
+              : exHistDayLog.map((e, i) => (
+                <div key={i} style={{ padding: "7px 0", borderBottom: "0.5px solid #F0EEF9" }}>
+                  <div style={{ fontSize: 13, fontWeight: 600 }}>{e.name}</div>
+                  <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>
+                    {e.weight ? `${e.weight}lbs × ${e.reps || "?"} reps${e.setsDone ? ` × ${e.setsDone} sets` : ""}` : "Bodyweight"} · {e.cat} · {e.time}
+                  </div>
+                </div>
+              ))
+            }
+            {exHistDayLog.length > 0 && (
+              <div style={{ fontSize: 12, color: C.accent, fontWeight: 700, marginTop: 8 }}>
+                {exHistDayLog.length} exercise{exHistDayLog.length > 1 ? "s" : ""} · {Math.round(exHistDayLog.reduce((s, e) => s + (e.cal || 0), 0))} kcal burned
+              </div>
+            )}
+          </div>
         </>}
         <div style={{ display: "flex", justifyContent: "flex-end", padding: "4px 12px 8px" }}>
           <button style={S.btnSm(C.primary)} onClick={() => setTab("journal")}>Journal →</button>
@@ -888,33 +1060,41 @@ export default function App() {
       {/* JOURNAL */}
       {tab === "journal" && <>
         <div style={{ ...S.card, background: "linear-gradient(135deg, #EEF0FF, #DBEAFE)" }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: C.primary }}>📔 Daily Journal — {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}</div>
-          <div style={{ fontSize: 12, color: C.muted, marginTop: 4 }}>Everything you tracked today, all in one place.</div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
+            <button style={{ ...S.btnSm(C.primary), padding: "5px 10px" }} onClick={() => navigateJournalDate(-1)}>‹ Prev</button>
+            <div style={{ textAlign: "center" }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: C.primary }}>📔 {isViewingToday ? "Today" : formatJournalDate(journalDate)}</div>
+              {!isViewingToday && <div style={{ fontSize: 10, color: C.warn, fontWeight: 600, marginTop: 2 }}>Viewing past day — read only</div>}
+            </div>
+            <button style={{ ...S.btnSm(isViewingToday ? "#CCC" : C.primary), padding: "5px 10px" }} onClick={() => navigateJournalDate(1)} disabled={isViewingToday}>Next ›</button>
+          </div>
+          {!isViewingToday && <button style={{ ...S.btnSm(C.accent), width: "100%", marginTop: 4 }} onClick={() => setJournalDate(today)}>Jump to Today</button>}
+          {isViewingToday && <div style={{ fontSize: 12, color: C.muted }}>Everything you tracked today, all in one place.</div>}
         </div>
 
         <div style={S.card}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
             <div style={{ fontWeight: 700, fontSize: 14 }}>💧 Water Intake</div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: C.blue }}>{water} / 8 cups</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: C.blue }}>{jWater} / 8 cups</div>
           </div>
           <div style={{ display: "flex", gap: 4, justifyContent: "space-between" }}>
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} onClick={() => setWater(water > i ? i : i + 1)} style={{ cursor: "pointer", fontSize: 28, opacity: i < water ? 1 : 0.25, transition: "all 0.15s" }}>💧</div>
+              <div key={i} onClick={() => isViewingToday && setWater(jWater > i ? i : i + 1)} style={{ cursor: isViewingToday ? "pointer" : "default", fontSize: 28, opacity: i < jWater ? 1 : 0.25, transition: "all 0.15s" }}>💧</div>
             ))}
           </div>
-          <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
-            <button style={{ ...S.btnSm(C.blue), flex: 1 }} onClick={() => setWater(water + 1)}>+ Add Cup</button>
+          {isViewingToday && <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+            <button style={{ ...S.btnSm(C.blue), flex: 1 }} onClick={() => setWater(jWater + 1)}>+ Add Cup</button>
             <button style={{ ...S.btnOut, flex: 1, padding: "6px" }} onClick={() => setWater(0)}>Reset</button>
-          </div>
+          </div>}
         </div>
 
         <div style={S.card}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-            <div style={{ fontWeight: 700, fontSize: 14 }}>🥗 Eating ({meals.length} meals)</div>
-            <span style={{ fontSize: 13, fontWeight: 700, color: C.primary }}>{totalCal} kcal</span>
+            <div style={{ fontWeight: 700, fontSize: 14 }}>🥗 Eating ({jMeals.length} meals)</div>
+            <span style={{ fontSize: 13, fontWeight: 700, color: C.primary }}>{jTotalCal} kcal</span>
           </div>
-          {meals.length === 0 ? <div style={{ fontSize: 13, color: C.muted, padding: 8, textAlign: "center" }}>No meals logged. Tap <b>Diet</b> tab to add.</div> :
-            meals.map((m, i) => (
+          {jMeals.length === 0 ? <div style={{ fontSize: 13, color: C.muted, padding: 8, textAlign: "center" }}>No meals logged{isViewingToday ? ". Tap Diet tab to add." : " on this day."}</div> :
+            jMeals.map((m, i) => (
               <div key={i} style={{ display: "flex", justifyContent: "space-between", fontSize: 13, padding: "5px 0", borderBottom: "0.5px solid #F0EEF9" }}>
                 <span>• {m.name}</span><span style={{ color: C.primary, fontWeight: 600 }}>{m.cal} kcal</span>
               </div>
@@ -924,19 +1104,19 @@ export default function App() {
 
         <div style={S.card}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-            <div style={{ fontWeight: 700, fontSize: 14 }}>💪 Workouts ({exerciseLog.length})</div>
-            <span style={{ fontSize: 13, fontWeight: 700, color: C.accent }}>{exerciseLog.reduce((s, e) => s + (e.cal || 0), 0)} kcal</span>
+            <div style={{ fontWeight: 700, fontSize: 14 }}>💪 Workouts ({jExLog.length})</div>
+            <span style={{ fontSize: 13, fontWeight: 700, color: C.accent }}>{jExLog.reduce((s, e) => s + (e.cal || 0), 0)} kcal</span>
           </div>
-          {exerciseLog.length === 0 ? <div style={{ fontSize: 13, color: C.muted, padding: 8, textAlign: "center" }}>No exercises logged. Tap <b>Exercise</b> tab to add.</div> :
-            exerciseLog.map((e, i) => (
+          {jExLog.length === 0 ? <div style={{ fontSize: 13, color: C.muted, padding: 8, textAlign: "center" }}>No exercises logged{isViewingToday ? ". Tap Exercise tab to add." : " on this day."}</div> :
+            jExLog.map((e, i) => (
               <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "6px 0", borderBottom: "0.5px solid #F0EEF9" }}>
                 <div style={{ fontSize: 13, flex: 1 }}>
                   <div>{e.name}</div>
                   <div style={{ fontSize: 11, color: C.muted }}>
-                    {e.weight ? `${e.weight}kg × ${e.reps || "?"} reps${e.setsDone ? ` × ${e.setsDone} sets` : ""} · ` : ""}{e.cat} · {e.time}
+                    {e.weight ? `${e.weight}lbs × ${e.reps || "?"} reps${e.setsDone ? ` × ${e.setsDone} sets` : ""} · ` : ""}{e.cat} · {e.time}
                   </div>
                 </div>
-                <span style={{ color: C.danger, cursor: "pointer", fontSize: 20, padding: "0 6px" }} onClick={() => removeExercise(i)}>×</span>
+                {isViewingToday && <span style={{ color: C.danger, cursor: "pointer", fontSize: 20, padding: "0 6px" }} onClick={() => removeExercise(i)}>×</span>}
               </div>
             ))
           }
@@ -945,13 +1125,13 @@ export default function App() {
         <div style={S.card}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
             <div style={{ fontWeight: 700, fontSize: 14 }}>✅ Habits</div>
-            <span style={{ fontSize: 13, fontWeight: 700, color: C.warn }}>{habitsCount} / 5 done</span>
+            <span style={{ fontSize: 13, fontWeight: 700, color: C.warn }}>{jHabitsCount} / 5 done</span>
           </div>
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
             {[["💧", "water", "Water"], ["🥗", "healthy", "Eat"], ["🧘", "meditate", "Meditate"], ["😴", "sleep", "Sleep"], ["🚶", "walk", "Walk"]].map(([icon, k, lbl]) => (
-              <div key={k} style={{ flex: 1, minWidth: 60, textAlign: "center", padding: "8px 4px", borderRadius: 8, background: habits[k] ? C.accentLight : "#F5F5F8", border: `1px solid ${habits[k] ? C.accent : "#EEE"}` }}>
+              <div key={k} style={{ flex: 1, minWidth: 60, textAlign: "center", padding: "8px 4px", borderRadius: 8, background: jHabits[k] ? C.accentLight : "#F5F5F8", border: `1px solid ${jHabits[k] ? C.accent : "#EEE"}` }}>
                 <div style={{ fontSize: 18 }}>{icon}</div>
-                <div style={{ fontSize: 10, color: habits[k] ? C.accent : C.muted, fontWeight: 600, marginTop: 2 }}>{habits[k] ? "✓ " : ""}{lbl}</div>
+                <div style={{ fontSize: 10, color: jHabits[k] ? C.accent : C.muted, fontWeight: 600, marginTop: 2 }}>{jHabits[k] ? "✓ " : ""}{lbl}</div>
               </div>
             ))}
           </div>
@@ -961,9 +1141,9 @@ export default function App() {
           <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 10 }}>😊 How are you feeling?</div>
           <div style={{ display: "flex", gap: 4, justifyContent: "space-between" }}>
             {MOOD_OPTIONS.map((m, i) => (
-              <div key={i} onClick={() => setDay("mood", m.label)} style={{ cursor: "pointer", flex: 1, textAlign: "center", padding: 8, borderRadius: 10, background: mood === m.label ? C.primaryLight : "transparent", border: `1.5px solid ${mood === m.label ? C.primary : "transparent"}` }}>
+              <div key={i} onClick={() => isViewingToday && setDay("mood", m.label)} style={{ cursor: isViewingToday ? "pointer" : "default", flex: 1, textAlign: "center", padding: 8, borderRadius: 10, background: jMood === m.label ? C.primaryLight : "transparent", border: `1.5px solid ${jMood === m.label ? C.primary : "transparent"}` }}>
                 <div style={{ fontSize: 26 }}>{m.emoji}</div>
-                <div style={{ fontSize: 10, color: mood === m.label ? C.primary : C.muted, fontWeight: 600 }}>{m.label}</div>
+                <div style={{ fontSize: 10, color: jMood === m.label ? C.primary : C.muted, fontWeight: 600 }}>{m.label}</div>
               </div>
             ))}
           </div>
@@ -973,16 +1153,17 @@ export default function App() {
           <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 6 }}>📝 Daily Reflection</div>
           <div style={{ fontSize: 12, color: C.muted, marginBottom: 8 }}>How did your day go? Wins, challenges, thoughts...</div>
           <textarea
-            style={{ ...S.input, minHeight: 100, fontFamily: "inherit", resize: "vertical", marginTop: 0 }}
+            style={{ ...S.input, minHeight: 100, fontFamily: "inherit", resize: "vertical", marginTop: 0, background: isViewingToday ? "#FAFAFE" : "#F5F5F5" }}
             placeholder="Today I felt... I'm grateful for... Tomorrow I want to..."
-            value={notes}
-            onChange={e => setDay("notes", e.target.value)}
+            value={jNotes}
+            onChange={e => isViewingToday && setDay("notes", e.target.value)}
+            readOnly={!isViewingToday}
           />
-          <div style={{ fontSize: 11, color: C.muted, marginTop: 6, textAlign: "right" }}>{notes.length} characters · Auto-saved 💾</div>
+          <div style={{ fontSize: 11, color: C.muted, marginTop: 6, textAlign: "right" }}>{jNotes.length} characters {isViewingToday ? "· Auto-saved 💾" : "· read only"}</div>
         </div>
 
         <div style={{ ...S.card, background: C.accentLight, border: `1px solid ${C.accent}`, textAlign: "center" }}>
-          <div style={{ fontSize: 13, color: "#065F46", fontWeight: 600 }}>🌟 Day Score: {Math.round(((habitsCount * 20) + (water >= 8 ? 20 : water * 2.5) + (exerciseLog.length > 0 ? 20 : 0) + (notes.length > 20 ? 20 : 0) + (mood ? 20 : 0)) / 5)}%</div>
+          <div style={{ fontSize: 13, color: "#065F46", fontWeight: 600 }}>🌟 Day Score: {Math.round(((jHabitsCount * 20) + (jWater >= 8 ? 20 : jWater * 2.5) + (jExLog.length > 0 ? 20 : 0) + (jNotes.length > 20 ? 20 : 0) + (jMood ? 20 : 0)) / 5)}%</div>
           <div style={{ fontSize: 11, color: "#065F46", marginTop: 4 }}>Habits · Water · Exercise · Reflection · Mood</div>
         </div>
         <div style={{ display: "flex", justifyContent: "flex-end", padding: "4px 12px 8px" }}>
@@ -1055,7 +1236,7 @@ export default function App() {
 
       <nav style={S.navBar}>
         {TABS.map(({ id, icon, label }) => (
-          <div key={id} style={S.navItem(tab === id)} onClick={() => setTab(id)}>
+          <div key={id} style={S.navItem(tab === id)} onClick={() => { setTab(id); if (id !== "journal") setJournalDate(today); }}>
             <span style={{ fontSize: 22 }}>{icon}</span>
             <span>{label}</span>
           </div>
