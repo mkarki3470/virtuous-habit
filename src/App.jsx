@@ -327,6 +327,28 @@ function SunriseIcon({ size = 48 }) {
   );
 }
 
+function GoalRing({ pct, color, label, value, target, unit }) {
+  const r = 26;
+  const circ = 2 * Math.PI * r;
+  const filled = Math.min(pct / 100, 1) * circ;
+  return (
+    <div style={{ textAlign: "center", flex: 1 }}>
+      <svg width={66} height={66} viewBox="0 0 66 66">
+        <circle cx={33} cy={33} r={r} fill="none" stroke="#E5E2F5" strokeWidth={8} />
+        <circle cx={33} cy={33} r={r} fill="none" stroke={color} strokeWidth={8}
+          strokeDasharray={circ} strokeDashoffset={circ - filled}
+          strokeLinecap="round" transform="rotate(-90 33 33)"
+          style={{ transition: "stroke-dashoffset 0.6s ease" }} />
+        <text x={33} y={37} textAnchor="middle" fontSize={11} fontWeight="800" fill={color}>
+          {Math.min(pct, 100)}%
+        </text>
+      </svg>
+      <div style={{ fontSize: 12, fontWeight: 700, color, marginTop: 2 }}>{label}</div>
+      <div style={{ fontSize: 10, color: "#6B7280", marginTop: 1 }}>{value} / {target}{unit}</div>
+    </div>
+  );
+}
+
 function storageGet(key) {
   try {
     const r = localStorage.getItem(STORAGE_PREFIX + key);
@@ -798,14 +820,43 @@ export default function App() {
           </div>
         )}
 
-        <div style={S.card}>
-          <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 8 }}>Quick Habits</div>
-          {[["💧", "Drank 8 glasses of water", "water"], ["🥗", "Ate mindfully today", "healthy"], ["🧘", "Meditated / Pranayama", "meditate"], ["😴", "Slept 7+ hours", "sleep"], ["🚶", "Walked 7,000+ steps", "walk"]].map(([icon, lbl, key]) => (
-            <div key={key} onClick={() => toggleHabit(key)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 0", borderBottom: "0.5px solid #F0EEF9", cursor: "pointer" }}>
-              <div style={{ width: 26, height: 26, borderRadius: 7, border: `2px solid ${habits[key] ? C.accent : "#CCC"}`, background: habits[key] ? C.accent : "#fff", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 15, fontWeight: 700, flexShrink: 0 }}>{habits[key] ? "✓" : ""}</div>
-              <span style={{ fontSize: 13 }}>{icon} {lbl}</span>
+        <div style={{ ...S.card }}>
+          <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 14 }}>🎯 Today's Goals</div>
+          <div style={{ display: "flex", justifyContent: "space-around", alignItems: "flex-start" }}>
+            <GoalRing
+              pct={Math.round((totalCal / calTarget()) * 100)}
+              color="#5B4FCF"
+              label="Calories"
+              value={totalCal}
+              target={calTarget()}
+              unit=" kcal"
+            />
+            <GoalRing
+              pct={profileSaved ? Math.round((totalProtein / Math.round(+profile.weight * 0.8)) * 100) : 0}
+              color="#10B981"
+              label="Protein"
+              value={totalProtein}
+              target={profileSaved ? Math.round(+profile.weight * 0.8) : 120}
+              unit="g"
+            />
+            <GoalRing
+              pct={Math.round((water / 8) * 100)}
+              color="#3B82F6"
+              label="Water"
+              value={water}
+              target={8}
+              unit=" cups"
+            />
+          </div>
+          <div style={{ marginTop: 14, padding: "10px 12px", background: C.primaryLight, borderRadius: 10, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div style={{ fontSize: 12, color: C.muted }}>💪 Workouts today</div>
+            <div style={{ fontSize: 16, fontWeight: 800, color: C.primary }}>{exerciseLog.length}</div>
+          </div>
+          {profileSaved && totalCal === 0 && water === 0 && (
+            <div style={{ fontSize: 11, color: C.muted, textAlign: "center", marginTop: 10 }}>
+              Log meals in Diet and water in Report to fill your rings!
             </div>
-          ))}
+          )}
         </div>
         <div style={{ display: "flex", justifyContent: "flex-end", padding: "4px 12px 8px" }}>
           <button style={S.btnSm(C.primary)} onClick={() => setTab("diet")}>Diet →</button>
