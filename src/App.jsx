@@ -67,6 +67,23 @@ const EXERCISES = {
     { name: "Cable Crunch", sets: "3×15", muscle: "Upper Abs", cal: 40 },
     { name: "Hanging Leg Raises", sets: "3×12", muscle: "Lower Abs", cal: 45 },
   ],
+  cardio: [
+    { name: "Treadmill Run", sets: "log mins", muscle: "Full Body, Cardio", cal: 300 },
+    { name: "Treadmill Walk (incline)", sets: "log mins", muscle: "Legs, Cardio", cal: 180 },
+    { name: "Stationary Bike", sets: "log mins", muscle: "Legs, Cardio", cal: 250 },
+    { name: "Elliptical", sets: "log mins", muscle: "Full Body, Low Impact", cal: 270 },
+    { name: "Rowing Machine", sets: "log mins", muscle: "Back, Arms, Cardio", cal: 280 },
+    { name: "Stair Climber", sets: "log mins", muscle: "Glutes, Legs, Cardio", cal: 300 },
+    { name: "Jump Rope / Skipping", sets: "500 reps", muscle: "Full Body, Cardio", cal: 200 },
+    { name: "Jumping Jacks", sets: "3×50", muscle: "Full Body, Cardio", cal: 80 },
+    { name: "Burpees", sets: "3×15", muscle: "Full Body, HIIT", cal: 100 },
+    { name: "HIIT Circuit", sets: "log mins", muscle: "Full Body, Fat Burn", cal: 350 },
+    { name: "Outdoor Walk", sets: "log mins / steps", muscle: "Legs, Cardio", cal: 150 },
+    { name: "Outdoor Run", sets: "log mins / km", muscle: "Full Body, Cardio", cal: 320 },
+    { name: "Swimming", sets: "log mins / laps", muscle: "Full Body, Low Impact", cal: 300 },
+    { name: "Cycling (outdoor)", sets: "log mins / km", muscle: "Legs, Cardio", cal: 260 },
+    { name: "Zumba / Dance", sets: "log mins", muscle: "Full Body, Fun Cardio", cal: 220 },
+  ],
 };
 
 const YOGA = {
@@ -728,7 +745,7 @@ export default function App() {
     { id: "home", icon: "🏠", label: "Home" },
     { id: "diet", icon: "🥗", label: "Diet" },
     { id: "exercise", icon: "💪", label: "Exercise" },
-    { id: "journal", icon: "📔", label: "Journal" },
+    { id: "journal", icon: "📋", label: "Report" },
     { id: "profile", icon: "👤", label: "Me" },
   ];
 
@@ -875,35 +892,29 @@ export default function App() {
 
         {exTab === "exercise" && <>
           <div style={{ padding: "0 12px", display: "flex", gap: 6, flexWrap: "wrap" }}>
-            {[["push","Chest & Tri"], ["pull","Back & Bi"], ["legs","Legs"], ["shoulders","Shoulders"], ["core","Abs"]].map(([c, lbl]) => (
-              <button key={c} style={S.pill(exCat === c)} onClick={() => setExCat(c)}>{lbl}</button>
+            {[["push","Chest & Tri"], ["pull","Back & Bi"], ["legs","Legs"], ["shoulders","Shoulders"], ["core","Abs"], ["cardio","❤️ Cardio"]].map(([c, lbl]) => (
+              <button key={c} style={{ ...S.pill(exCat === c), flexShrink: 0 }} onClick={() => setExCat(c)}>{lbl}</button>
             ))}
           </div>
           <div style={S.card}>
             <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 4 }}>
-              {exCat === "push" ? "Chest & Triceps" : exCat === "pull" ? "Back & Biceps" : exCat === "legs" ? "Legs" : exCat === "shoulders" ? "Shoulders" : "Abs"} Workout
+              {exCat === "push" ? "Chest & Triceps" : exCat === "pull" ? "Back & Biceps" : exCat === "legs" ? "Legs" : exCat === "shoulders" ? "Shoulders" : exCat === "core" ? "Abs" : "❤️ Cardio"} Workout
             </div>
             <div style={{ fontSize: 12, color: C.muted, marginBottom: 10 }}>
-              {exCat === "push" ? "Chest, Triceps & Upper Body" : exCat === "pull" ? "Back, Biceps & Deadlift" : exCat === "legs" ? "Quads, Hamstrings, Glutes & More" : exCat === "shoulders" ? "Deltoid Focus" : "Abs, Obliques & Core Stability"}
+              {exCat === "push" ? "Chest, Triceps & Upper Body" : exCat === "pull" ? "Back, Biceps & Deadlift" : exCat === "legs" ? "Quads, Hamstrings, Glutes & More" : exCat === "shoulders" ? "Deltoid Focus" : exCat === "core" ? "Abs, Obliques & Core Stability" : "Log mins in the Reps field · Sets = rounds"}
             </div>
-            {EXERCISES[exCat].map((ex, i) => {
-              const history = exHistory.filter(e => e.name === ex.name && e.weight);
-              const lastEntry = history[history.length - 1];
-              const pr = history.length > 0 ? Math.max(...history.map(e => e.weight)) : null;
-              return (
-                <div key={i} style={{ padding: "8px 0", borderBottom: "0.5px solid #F0EEF9", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-                      <div style={{ fontSize: 13, fontWeight: 600 }}>{ex.name}</div>
-                      <span style={S.tag(C.primary)}>{ex.sets}</span>
-                    </div>
-                    <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>{ex.muscle} · ~{ex.cal} kcal</div>
-                    {pr && <div style={{ fontSize: 11, color: C.accent, marginTop: 2, fontWeight: 600 }}>🏆 PR: {pr}kg · Last: {lastEntry.weight}kg × {lastEntry.reps}</div>}
+            {EXERCISES[exCat].map((ex, i) => (
+              <div key={i} style={{ padding: "8px 0", borderBottom: "0.5px solid #F0EEF9", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
+                    <div style={{ fontSize: 13, fontWeight: 600 }}>{ex.name}</div>
+                    <span style={S.tag(C.primary)}>{ex.sets}</span>
                   </div>
-                  <button style={S.btnSm(C.accent)} onClick={() => openLogModal(ex, exCat)}>+ Log</button>
+                  <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>{ex.muscle} · ~{ex.cal} kcal</div>
                 </div>
-              );
-            })}
+                <button style={S.btnSm(C.accent)} onClick={() => openLogModal(ex, exCat)}>+ Log</button>
+              </div>
+            ))}
           </div>
 
           <div style={S.card}>
@@ -1053,7 +1064,7 @@ export default function App() {
           </div>
         </>}
         <div style={{ display: "flex", justifyContent: "flex-end", padding: "4px 12px 8px" }}>
-          <button style={S.btnSm(C.primary)} onClick={() => setTab("journal")}>Journal →</button>
+          <button style={S.btnSm(C.primary)} onClick={() => setTab("journal")}>Report →</button>
         </div>
       </>}
 
@@ -1063,7 +1074,7 @@ export default function App() {
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
             <button style={{ ...S.btnSm(C.primary), padding: "5px 10px" }} onClick={() => navigateJournalDate(-1)}>‹ Prev</button>
             <div style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: C.primary }}>📔 {isViewingToday ? "Today" : formatJournalDate(journalDate)}</div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: C.primary }}>📋 {isViewingToday ? "Today's Report" : formatJournalDate(journalDate)}</div>
               {!isViewingToday && <div style={{ fontSize: 10, color: C.warn, fontWeight: 600, marginTop: 2 }}>Viewing past day — read only</div>}
             </div>
             <button style={{ ...S.btnSm(isViewingToday ? "#CCC" : C.primary), padding: "5px 10px" }} onClick={() => navigateJournalDate(1)} disabled={isViewingToday}>Next ›</button>
