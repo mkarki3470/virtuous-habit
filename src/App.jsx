@@ -398,6 +398,7 @@ export default function App() {
   const [logSets, setLogSets] = useState("");
 
   const [reportExercise, setReportExercise] = useState(null);
+  const [forceRender, setForceRender] = useState(0);
   const [journalDate, setJournalDate] = useState(today);
 
   useEffect(() => {
@@ -429,6 +430,7 @@ export default function App() {
   }, [exHistory]);
 
   const isViewingToday = journalDate === today;
+  const isJournalEditable = isViewingToday || canEdit(journalDate);
   const journalViewData = isViewingToday ? dailyData : (storageGet(`daily:${user?.username}:${journalDate}`) || {});
   function jGet(key, def) {
     return journalViewData[key] !== undefined ? journalViewData[key] : def;
@@ -451,7 +453,41 @@ export default function App() {
     const d = new Date(exHistDate + "T12:00:00"); d.setDate(d.getDate() + dir);
     const k = d.toISOString().split("T")[0]; if (k <= today) setExHistDate(k);
   }
+  const canEdit = (date) => {
+    const diff = Math.round((new Date(today + "T12:00:00") - new Date(date + "T12:00:00")) / 86400000);
+    return diff <= 3;
+  };
+  function setDayForDate(date, key, value) {
+    if (date === today) { setDay(key, value); return; }
+    const existing = storageGet(`daily:${user.username}:${date}`) || {};
+    storageSet(`daily:${user.username}:${date}`, { ...existing, [key]: value });
+    setForceRender(r => r + 1);
+  }
+  function logMealForDate(food, date) {
+    if (date === today) { logMeal(food); return; }
+    const existing = storageGet(`daily:${user.username}:${date}`) || {};
+    const meals = existing.meals || [];
+    storageSet(`daily:${user.username}:${date}`, { ...existing, meals: [...meals, food] });
+    setForceRender(r => r + 1);
+    showToast(`✓ Logged ${food.name}`);
+  }
+  function removeMealForDate(i, date) {
+    if (date === today) { removeM(i); return; }
+    const existing = storageGet(`daily:${user.username}:${date}`) || {};
+    const meals = (existing.meals || []).filter((_, j) => j !== i);
+    storageSet(`daily:${user.username}:${date}`, { ...existing, meals });
+    setForceRender(r => r + 1);
+  }
+  function removeExForDate(i, date) {
+    if (date === today) { removeExercise(i); return; }
+    const existing = storageGet(`daily:${user.username}:${date}`) || {};
+    const exerciseLog = (existing.exerciseLog || []).filter((_, j) => j !== i);
+    storageSet(`daily:${user.username}:${date}`, { ...existing, exerciseLog });
+    setForceRender(r => r + 1);
+  }
+
   const isDietToday = dietDate === today;
+  const isDietEditable = isDietToday || canEdit(dietDate);
   const dietViewData = isDietToday ? dailyData : (storageGet(`daily:${user?.username}:${dietDate}`) || {});
   const dietMeals = dietViewData.meals || [];
   const dietTotalCal = dietMeals.reduce((s, m) => s + m.cal, 0);
@@ -883,7 +919,7 @@ export default function App() {
                 <div style={{ fontSize: 13, fontWeight: 500 }}>{f.name}</div>
                 <div style={{ fontSize: 11, color: C.muted }}>{f.cal} kcal · P:{f.protein}g C:{f.carbs}g F:{f.fat}g</div>
               </div>
-              <button style={S.btnSm(C.accent)} onClick={() => logMeal(f)}>+ Log</button>
+              {isDietEditable && <button style={S.btnSm(C.accent)} onClick={() => logMealForDate(f, dietDate)}>+ Log</button>}
             </div>
           ))}
 
@@ -900,7 +936,7 @@ export default function App() {
                   <div style={{ fontSize: 13, fontWeight: 500 }}>{f.name}</div>
                   <div style={{ fontSize: 11, color: C.muted }}>{f.cal} kcal/{f.per} · P:{f.protein}g C:{f.carbs}g F:{f.fat}g</div>
                 </div>
-                <button style={S.btnSm(C.accent)} onClick={() => logMeal(f)}>+ Log</button>
+                {isDietEditable && <button style={S.btnSm(C.accent)} onClick={() => logMealForDate(f, dietDate)}>+ Log</button>}
               </div>
             ))}
           </>}
@@ -912,7 +948,7 @@ export default function App() {
             <button style={{ ...S.btnSm(C.primary), padding: "5px 10px" }} onClick={() => navigateDietDate(-1)}>‹ Prev</button>
             <div style={{ textAlign: "center" }}>
               <div style={{ fontSize: 13, fontWeight: 700, color: C.primary }}>📝 {isDietToday ? "Today's Log" : formatJournalDate(dietDate)}</div>
-              {!isDietToday && <div style={{ fontSize: 10, color: C.warn, fontWeight: 600 }}>Past day — read only</div>}
+              {!isDietToday && <div style={{ fontSize: 10, color: isDietEditable ? C.accent : C.warn, fontWeight: 600 }}>{isDietEditable ? "✏️ Editable" : "🔒 Read only"}</div>}
             </div>
             <button style={{ ...S.btnSm(isDietToday ? "#CCC" : C.primary), padding: "5px 10px" }} onClick={() => navigateDietDate(1)} disabled={isDietToday}>Next ›</button>
           </div>
@@ -922,7 +958,7 @@ export default function App() {
             : dietMeals.map((m, i) => (
               <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "6px 0", borderBottom: "0.5px solid #F0EEF9" }}>
                 <div style={{ fontSize: 13 }}>{m.name} <span style={{ color: C.muted, fontSize: 11 }}>({m.cal} kcal)</span></div>
-                {isDietToday && <span style={{ color: C.danger, cursor: "pointer", fontSize: 22, lineHeight: 1, padding: "0 8px" }} onClick={() => removeM(i)}>×</span>}
+                {isDietEditable && <span style={{ color: C.danger, cursor: "pointer", fontSize: 22, lineHeight: 1, padding: "0 8px" }} onClick={() => removeMealForDate(i, dietDate)}>×</span>}
               </div>
             ))
           }
@@ -1126,7 +1162,7 @@ export default function App() {
             <button style={{ ...S.btnSm(C.primary), padding: "5px 10px" }} onClick={() => navigateJournalDate(-1)}>‹ Prev</button>
             <div style={{ textAlign: "center" }}>
               <div style={{ fontSize: 12, fontWeight: 700, color: C.primary }}>📋 {isViewingToday ? "Today's Report" : formatJournalDate(journalDate)}</div>
-              {!isViewingToday && <div style={{ fontSize: 10, color: C.warn, fontWeight: 600, marginTop: 2 }}>Viewing past day — read only</div>}
+              {!isViewingToday && <div style={{ fontSize: 10, color: isJournalEditable ? C.accent : C.warn, fontWeight: 600, marginTop: 2 }}>{isJournalEditable ? "✏️ Editable — within 3 days" : "🔒 Read only — too old to edit"}</div>}
             </div>
             <button style={{ ...S.btnSm(isViewingToday ? "#CCC" : C.primary), padding: "5px 10px" }} onClick={() => navigateJournalDate(1)} disabled={isViewingToday}>Next ›</button>
           </div>
@@ -1141,12 +1177,12 @@ export default function App() {
           </div>
           <div style={{ display: "flex", gap: 4, justifyContent: "space-between" }}>
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} onClick={() => isViewingToday && setWater(jWater > i ? i : i + 1)} style={{ cursor: isViewingToday ? "pointer" : "default", fontSize: 28, opacity: i < jWater ? 1 : 0.25, transition: "all 0.15s" }}>💧</div>
+              <div key={i} onClick={() => isJournalEditable && setDayForDate(journalDate, "water", Math.max(0, jWater > i ? i : i + 1))} style={{ cursor: isJournalEditable ? "pointer" : "default", fontSize: 28, opacity: i < jWater ? 1 : 0.25, transition: "all 0.15s" }}>💧</div>
             ))}
           </div>
-          {isViewingToday && <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
-            <button style={{ ...S.btnSm(C.blue), flex: 1 }} onClick={() => setWater(jWater + 1)}>+ Add Cup</button>
-            <button style={{ ...S.btnOut, flex: 1, padding: "6px" }} onClick={() => setWater(0)}>Reset</button>
+          {isJournalEditable && <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+            <button style={{ ...S.btnSm(C.blue), flex: 1 }} onClick={() => setDayForDate(journalDate, "water", Math.max(0, jWater + 1))}>+ Add Cup</button>
+            <button style={{ ...S.btnOut, flex: 1, padding: "6px" }} onClick={() => setDayForDate(journalDate, "water", 0)}>Reset</button>
           </div>}
         </div>
 
@@ -1178,7 +1214,7 @@ export default function App() {
                     {e.weight ? `${e.weight}lbs × ${e.reps || "?"} reps${e.setsDone ? ` × ${e.setsDone} sets` : ""} · ` : ""}{e.cat} · {e.time}
                   </div>
                 </div>
-                {isViewingToday && <span style={{ color: C.danger, cursor: "pointer", fontSize: 20, padding: "0 6px" }} onClick={() => removeExercise(i)}>×</span>}
+                {isJournalEditable && <span style={{ color: C.danger, cursor: "pointer", fontSize: 20, padding: "0 6px" }} onClick={() => removeExForDate(i, journalDate)}>×</span>}
               </div>
             ))
           }
@@ -1203,7 +1239,7 @@ export default function App() {
           <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 10 }}>😊 How are you feeling?</div>
           <div style={{ display: "flex", gap: 4, justifyContent: "space-between" }}>
             {MOOD_OPTIONS.map((m, i) => (
-              <div key={i} onClick={() => isViewingToday && setDay("mood", m.label)} style={{ cursor: isViewingToday ? "pointer" : "default", flex: 1, textAlign: "center", padding: 8, borderRadius: 10, background: jMood === m.label ? C.primaryLight : "transparent", border: `1.5px solid ${jMood === m.label ? C.primary : "transparent"}` }}>
+              <div key={i} onClick={() => isJournalEditable && setDayForDate(journalDate, "mood", m.label)} style={{ cursor: isJournalEditable ? "pointer" : "default", flex: 1, textAlign: "center", padding: 8, borderRadius: 10, background: jMood === m.label ? C.primaryLight : "transparent", border: `1.5px solid ${jMood === m.label ? C.primary : "transparent"}` }}>
                 <div style={{ fontSize: 26 }}>{m.emoji}</div>
                 <div style={{ fontSize: 10, color: jMood === m.label ? C.primary : C.muted, fontWeight: 600 }}>{m.label}</div>
               </div>
@@ -1215,13 +1251,13 @@ export default function App() {
           <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 6 }}>📝 Daily Reflection</div>
           <div style={{ fontSize: 12, color: C.muted, marginBottom: 8 }}>How did your day go? Wins, challenges, thoughts...</div>
           <textarea
-            style={{ ...S.input, minHeight: 100, fontFamily: "inherit", resize: "vertical", marginTop: 0, background: isViewingToday ? "#FAFAFE" : "#F5F5F5" }}
+            style={{ ...S.input, minHeight: 100, fontFamily: "inherit", resize: "vertical", marginTop: 0, background: isJournalEditable ? "#FAFAFE" : "#F5F5F5" }}
             placeholder="Today I felt... I'm grateful for... Tomorrow I want to..."
             value={jNotes}
-            onChange={e => isViewingToday && setDay("notes", e.target.value)}
-            readOnly={!isViewingToday}
+            onChange={e => isJournalEditable && setDayForDate(journalDate, "notes", e.target.value)}
+            readOnly={!isJournalEditable}
           />
-          <div style={{ fontSize: 11, color: C.muted, marginTop: 6, textAlign: "right" }}>{jNotes.length} characters {isViewingToday ? "· Auto-saved 💾" : "· read only"}</div>
+          <div style={{ fontSize: 11, color: C.muted, marginTop: 6, textAlign: "right" }}>{jNotes.length} characters {isJournalEditable ? "· Auto-saved 💾" : "· read only"}</div>
         </div>
 
         <div style={{ ...S.card, background: C.accentLight, border: `1px solid ${C.accent}`, textAlign: "center" }}>
