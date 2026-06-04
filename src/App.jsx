@@ -1,4 +1,6 @@
 import { useState, useEffect, Component } from "react";
+import { db } from "./firebase";
+import { doc, getDoc, setDoc, getDocs, collection } from "firebase/firestore";
 
 export class AppErrorBoundary extends Component {
   constructor(props) { super(props); this.state = { err: null }; }
@@ -414,16 +416,24 @@ export default function App() {
   const [logSets, setLogSets] = useState("");
 
   const [reportExercise, setReportExercise] = useState(null);
-  const [forceRender, setForceRender] = useState(0);
   const [journalDate, setJournalDate] = useState(today);
+  const [dailyCache, setDailyCache] = useState({});
+  const [dataLoading, setDataLoading] = useState(false);
   const [quantityModal, setQuantityModal] = useState(null);
   const [quantityInput, setQuantityInput] = useState("");
   const [customFood, setCustomFood] = useState({ name: "", cal: "", protein: "", carbs: "", fat: "" });
 
   useEffect(() => {
-    const accs = storageGet("accounts");
-    if (accs) setAccounts(accs);
-    setScreen("login");
+    const load = async () => {
+      try {
+        const snap = await getDocs(collection(db, "accounts"));
+        const accs = {};
+        snap.forEach(d => { accs[d.id] = d.data(); });
+        setAccounts(accs);
+      } catch (e) { console.error("Failed to load accounts", e); }
+      setScreen("login");
+    };
+    load();
     window.history.pushState(null, "", window.location.href);
     const handlePop = () => { window.history.pushState(null, "", window.location.href); };
     window.addEventListener("popstate", handlePop);
@@ -431,30 +441,42 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (!user) return;
-    const p = storageGet(`profile:${user.username}`);
-    if (p) { setProfile(p); setProfileSaved(true); }
-    const d = storageGet(`daily:${user.username}:${today}`);
-    if (d) setDailyData(d);
-    const h = storageGet(`exHistory:${user.username}`);
-    if (h) setExHistory(h);
-  }, [user]);
-
-  useEffect(() => {
     if (user && Object.keys(dailyData).length > 0) {
-      storageSet(`daily:${user.username}:${today}`, dailyData);
+      setDoc(doc(db, "daily", `${user.username}_${today}`), dailyData).catch(console.error);
     }
   }, [dailyData]);
 
   useEffect(() => {
     if (user && exHistory.length > 0) {
-      storageSet(`exHistory:${user.username}`, exHistory);
+      setDoc(doc(db, "exHistory", user.username), { entries: exHistory }).catch(console.error);
     }
   }, [exHistory]);
 
+  // Load uncached past-date data when date nav changes
+  useEffect(() => {
+    if (!user || dietDate === today || dailyCache[dietDate] !== undefined) return;
+    getDoc(doc(db, "daily", `${user.username}_${dietDate}`)).then(snap => {
+      setDailyCache(p => ({ ...p, [dietDate]: snap.exists() ? snap.data() : {} }));
+    }).catch(console.error);
+  }, [dietDate, user]);
+
+  useEffect(() => {
+    if (!user || journalDate === today || dailyCache[journalDate] !== undefined) return;
+    getDoc(doc(db, "daily", `${user.username}_${journalDate}`)).then(snap => {
+      setDailyCache(p => ({ ...p, [journalDate]: snap.exists() ? snap.data() : {} }));
+    }).catch(console.error);
+  }, [journalDate, user]);
+
+  useEffect(() => {
+    if (!user || exHistDate === today || dailyCache[exHistDate] !== undefined) return;
+    getDoc(doc(db, "daily", `${user.username}_${exHistDate}`)).then(snap => {
+      setDailyCache(p => ({ ...p, [exHistDate]: snap.exists() ? snap.data() : {} }));
+    }).catch(console.error);
+  }, [exHistDate, user]);
+
   const isViewingToday = journalDate === today;
   const isJournalEditable = isViewingToday || canEdit(journalDate);
-  const journalViewData = isViewingToday ? dailyData : (storageGet(`daily:${user?.username}:${journalDate}`) || {});
+  const journalViewData = isViewingToday ? dailyData : (dailyCache[journalDate] || {});
   function jGet(key, def) {
     return journalViewData[key] !== undefined ? journalViewData[key] : def;
   }
@@ -480,42 +502,39 @@ export default function App() {
     const diff = Math.round((new Date(today + "T12:00:00") - new Date(date + "T12:00:00")) / 86400000);
     return diff <= 4;
   };
+  function savePastDay(date, updated) {
+    setDailyCache(p => ({ ...p, [date]: updated }));
+    setDoc(doc(db, "daily", `${user.username}_${date}`), updated).catch(console.error);
+  }
   function setDayForDate(date, key, value) {
     if (date === today) { setDay(key, value); return; }
-    const existing = storageGet(`daily:${user.username}:${date}`) || {};
-    storageSet(`daily:${user.username}:${date}`, { ...existing, [key]: value });
-    setForceRender(r => r + 1);
+    const existing = dailyCache[date] || {};
+    savePastDay(date, { ...existing, [key]: value });
   }
   function logMealForDate(food, date) {
     if (date === today) { logMeal(food); return; }
-    const existing = storageGet(`daily:${user.username}:${date}`) || {};
-    const meals = existing.meals || [];
-    storageSet(`daily:${user.username}:${date}`, { ...existing, meals: [...meals, food] });
-    setForceRender(r => r + 1);
+    const existing = dailyCache[date] || {};
+    savePastDay(date, { ...existing, meals: [...(existing.meals || []), food] });
     showToast(`✓ Logged ${food.name}`);
   }
   function removeMealForDate(i, date) {
     if (date === today) { removeM(i); return; }
-    const existing = storageGet(`daily:${user.username}:${date}`) || {};
-    const meals = (existing.meals || []).filter((_, j) => j !== i);
-    storageSet(`daily:${user.username}:${date}`, { ...existing, meals });
-    setForceRender(r => r + 1);
+    const existing = dailyCache[date] || {};
+    savePastDay(date, { ...existing, meals: (existing.meals || []).filter((_, j) => j !== i) });
   }
   function removeExForDate(i, date) {
     if (date === today) { removeExercise(i); return; }
-    const existing = storageGet(`daily:${user.username}:${date}`) || {};
-    const exerciseLog = (existing.exerciseLog || []).filter((_, j) => j !== i);
-    storageSet(`daily:${user.username}:${date}`, { ...existing, exerciseLog });
-    setForceRender(r => r + 1);
+    const existing = dailyCache[date] || {};
+    savePastDay(date, { ...existing, exerciseLog: (existing.exerciseLog || []).filter((_, j) => j !== i) });
   }
 
   const isDietToday = dietDate === today;
   const isDietEditable = isDietToday || canEdit(dietDate);
-  const dietViewData = isDietToday ? dailyData : (storageGet(`daily:${user?.username}:${dietDate}`) || {});
+  const dietViewData = isDietToday ? dailyData : (dailyCache[dietDate] || {});
   const dietMeals = dietViewData.meals || [];
   const dietTotalCal = dietMeals.reduce((s, m) => s + m.cal, 0);
   const dietTotalProtein = dietMeals.reduce((s, m) => s + (m.protein || 0), 0);
-  const exHistDayData = exHistDate === today ? dailyData : (storageGet(`daily:${user?.username}:${exHistDate}`) || {});
+  const exHistDayData = exHistDate === today ? dailyData : (dailyCache[exHistDate] || {});
   const exHistDayLog = exHistDayData.exerciseLog || [];
 
   const jMeals = jGet("meals", []);
@@ -568,25 +587,41 @@ export default function App() {
     setFoodLoading(false);
   }
 
-  function handleRegisterStep1() {
+  async function handleRegisterStep1() {
     if (!authForm.name.trim()) { setAuthErr("Please enter your name"); return; }
     if (!/^\d{4}$/.test(authForm.pin)) { setAuthErr("PIN must be exactly 4 digits"); return; }
     if (authForm.pin !== authForm.confirmPin) { setAuthErr("PINs don't match"); return; }
     const username = authForm.name.toLowerCase().trim();
     if (accounts[username]) { setAuthErr("Name already registered. Try a different name or sign in."); return; }
-    const newUser = { name: authForm.name.trim(), username, pin: authForm.pin };
-    const updated = { ...accounts, [username]: newUser };
-    setAccounts(updated); storageSet("accounts", updated);
-    setUser(newUser); setAuthErr(""); setScreen("dashboard");
-    showToast("🎉 Account created! Welcome");
+    setDataLoading(true);
+    try {
+      const newUser = { name: authForm.name.trim(), username, pin: authForm.pin };
+      await setDoc(doc(db, "accounts", username), newUser);
+      setAccounts(p => ({ ...p, [username]: newUser }));
+      setUser(newUser); setAuthErr(""); setScreen("dashboard");
+      showToast("🎉 Account created! Welcome");
+    } catch (e) { setAuthErr("Could not create account. Check your connection."); }
+    setDataLoading(false);
   }
-  function handleLogin() {
+  async function handleLogin() {
     const pin = authForm.pin;
     if (!pin) { setAuthErr("Please enter your PIN"); return; }
     const match = Object.values(accounts).find(a => a.pin === pin);
     if (!match) { setAuthErr("Incorrect PIN. Please try again."); return; }
-    setUser(match); setAuthErr(""); setScreen("dashboard");
-    showToast(`Welcome back, ${match.name}! 🙏`);
+    setDataLoading(true);
+    try {
+      const [profileSnap, daySnap, histSnap] = await Promise.all([
+        getDoc(doc(db, "profiles", match.username)),
+        getDoc(doc(db, "daily", `${match.username}_${today}`)),
+        getDoc(doc(db, "exHistory", match.username)),
+      ]);
+      if (profileSnap.exists()) { setProfile(profileSnap.data()); setProfileSaved(true); }
+      if (daySnap.exists()) setDailyData(daySnap.data());
+      if (histSnap.exists()) setExHistory(histSnap.data().entries || []);
+      setUser(match); setAuthErr(""); setScreen("dashboard");
+      showToast(`Welcome back, ${match.name}! 🙏`);
+    } catch (e) { setAuthErr("Sign-in failed. Check your connection."); }
+    setDataLoading(false);
   }
   function handleSignOut() {
     setUser(null); setProfile({ weight: "", height: "", age: "", goal: "lose", gender: "male" });
@@ -594,10 +629,10 @@ export default function App() {
     setAuthForm({ name: "", pin: "", confirmPin: "" }); setScreen("login");
     showToast("Signed out safely 👋");
   }
-  function saveProfile() {
+  async function saveProfile() {
     if (!profile.weight || !profile.height || !profile.age) { showToast("⚠️ Please fill all fields"); return; }
     setProfileSaved(true);
-    storageSet(`profile:${user.username}`, profile);
+    setDoc(doc(db, "profiles", user.username), profile).catch(console.error);
     const newWeight = parseFloat(profile.weight);
     const wLog = weightLog.length === 0 || weightLog[weightLog.length - 1].weight !== newWeight ?
       [...weightLog, { date: today, weight: newWeight }] : weightLog;
@@ -753,8 +788,8 @@ export default function App() {
             <input style={{ ...S.input, letterSpacing: 6, fontWeight: 700 }} type="password" inputMode="numeric" maxLength={4} placeholder="••••" value={authForm.confirmPin} onChange={e => setAuthForm(p => ({ ...p, confirmPin: e.target.value.replace(/\D/g, "").slice(0, 4) }))} />
           </>}
           {authErr && <div style={S.err}>⚠️ {authErr}</div>}
-          <button style={{ ...S.btn(), marginTop: 16 }} onClick={isReg ? handleRegisterStep1 : handleLogin}>
-            {isReg ? "Create Account 🎉" : "Sign In with PIN"}
+          <button style={{ ...S.btn(), marginTop: 16, opacity: dataLoading ? 0.7 : 1 }} onClick={isReg ? handleRegisterStep1 : handleLogin} disabled={dataLoading}>
+            {dataLoading ? "Please wait…" : isReg ? "Create Account 🎉" : "Sign In with PIN"}
           </button>
         </div>
         {toast && <div style={S.toast}>{toast}</div>}
