@@ -1,4 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Component } from "react";
+
+export class AppErrorBoundary extends Component {
+  constructor(props) { super(props); this.state = { err: null }; }
+  static getDerivedStateFromError(e) { return { err: e }; }
+  render() {
+    if (this.state.err) return (
+      <div style={{ fontFamily: "system-ui, sans-serif", padding: 32, textAlign: "center", maxWidth: 400, margin: "60px auto" }}>
+        <div style={{ fontSize: 40, marginBottom: 16 }}>😔</div>
+        <div style={{ fontSize: 18, fontWeight: 700, marginBottom: 8 }}>Something went wrong</div>
+        <div style={{ fontSize: 13, color: "#666", marginBottom: 24 }}>Your data is safe. Tap below to reload.</div>
+        <button onClick={() => window.location.reload()} style={{ background: "#5B4FCF", color: "#fff", border: "none", borderRadius: 10, padding: "12px 28px", fontWeight: 700, fontSize: 15, cursor: "pointer" }}>Reload App</button>
+      </div>
+    );
+    return this.props.children;
+  }
+}
 
 const C = {
   primary: "#5B4FCF", primaryDark: "#4338CA", primaryLight: "#EEF0FF",
@@ -400,11 +416,18 @@ export default function App() {
   const [reportExercise, setReportExercise] = useState(null);
   const [forceRender, setForceRender] = useState(0);
   const [journalDate, setJournalDate] = useState(today);
+  const [quantityModal, setQuantityModal] = useState(null);
+  const [quantityInput, setQuantityInput] = useState("");
+  const [customFood, setCustomFood] = useState({ name: "", cal: "", protein: "", carbs: "", fat: "" });
 
   useEffect(() => {
     const accs = storageGet("accounts");
     if (accs) setAccounts(accs);
     setScreen("login");
+    window.history.pushState(null, "", window.location.href);
+    const handlePop = () => { window.history.pushState(null, "", window.location.href); };
+    window.addEventListener("popstate", handlePop);
+    return () => window.removeEventListener("popstate", handlePop);
   }, []);
 
   useEffect(() => {
@@ -455,7 +478,7 @@ export default function App() {
   }
   const canEdit = (date) => {
     const diff = Math.round((new Date(today + "T12:00:00") - new Date(date + "T12:00:00")) / 86400000);
-    return diff <= 3;
+    return diff <= 4;
   };
   function setDayForDate(date, key, value) {
     if (date === today) { setDay(key, value); return; }
@@ -492,7 +515,7 @@ export default function App() {
   const dietMeals = dietViewData.meals || [];
   const dietTotalCal = dietMeals.reduce((s, m) => s + m.cal, 0);
   const dietTotalProtein = dietMeals.reduce((s, m) => s + (m.protein || 0), 0);
-  const exHistDayData = storageGet(`daily:${user?.username}:${exHistDate}`) || {};
+  const exHistDayData = exHistDate === today ? dailyData : (storageGet(`daily:${user?.username}:${exHistDate}`) || {});
   const exHistDayLog = exHistDayData.exerciseLog || [];
 
   const jMeals = jGet("meals", []);
@@ -551,30 +574,19 @@ export default function App() {
     if (authForm.pin !== authForm.confirmPin) { setAuthErr("PINs don't match"); return; }
     const username = authForm.name.toLowerCase().trim();
     if (accounts[username]) { setAuthErr("Name already registered. Try a different name or sign in."); return; }
-    setAuthErr(""); setScreen("secQ");
-  }
-  function handleSecQSetup() {
-    if (!secAns.trim()) { setAuthErr("Please answer the security question"); return; }
-    const username = authForm.name.toLowerCase().trim();
-    const newUser = { name: authForm.name.trim(), username, pin: authForm.pin, secQ, secAns: secAns.toLowerCase().trim() };
+    const newUser = { name: authForm.name.trim(), username, pin: authForm.pin };
     const updated = { ...accounts, [username]: newUser };
     setAccounts(updated); storageSet("accounts", updated);
     setUser(newUser); setAuthErr(""); setScreen("dashboard");
     showToast("🎉 Account created! Welcome");
   }
   function handleLogin() {
-    const username = authForm.name.toLowerCase().trim();
-    const acc = accounts[username];
-    if (!acc) { setAuthErr("Name not found. Please sign up first."); return; }
-    if (acc.pin !== authForm.pin) { setAuthErr("Incorrect PIN"); return; }
-    setSecQ(acc.secQ); setSecAnsInput(""); setAuthErr(""); setScreen("loginMFA");
-  }
-  function handleLoginMFA() {
-    const acc = accounts[authForm.name.toLowerCase().trim()];
-    if (secAnsInput.toLowerCase().trim() === acc.secAns) {
-      setUser(acc); setAuthErr(""); setScreen("dashboard");
-      showToast(`Welcome back, ${acc.name}! 🙏`);
-    } else setAuthErr("Incorrect answer");
+    const pin = authForm.pin;
+    if (!pin) { setAuthErr("Please enter your PIN"); return; }
+    const match = Object.values(accounts).find(a => a.pin === pin);
+    if (!match) { setAuthErr("Incorrect PIN. Please try again."); return; }
+    setUser(match); setAuthErr(""); setScreen("dashboard");
+    showToast(`Welcome back, ${match.name}! 🙏`);
   }
   function handleSignOut() {
     setUser(null); setProfile({ weight: "", height: "", age: "", goal: "lose", gender: "male" });
@@ -612,6 +624,27 @@ export default function App() {
 
   function logMeal(food) { setDay("meals", [...meals, food]); showToast(`✓ Logged ${food.name}`); }
   function removeM(i) { setDay("meals", meals.filter((_, j) => j !== i)); }
+  function openQuantityModal(food, date) {
+    setQuantityModal({ food, date });
+    setQuantityInput("");
+  }
+  function confirmQuantityLog() {
+    if (!quantityModal) return;
+    const { food, date } = quantityModal;
+    const qty = parseFloat(quantityInput) || 1;
+    const isPer100g = food.per === "100g";
+    const multiplier = isPer100g ? qty / 100 : qty;
+    const scaled = {
+      ...food,
+      name: isPer100g ? `${food.name} (${qty}g)` : qty === 1 ? food.name : `${food.name} ×${qty}`,
+      cal: Math.round(food.cal * multiplier),
+      protein: Math.round((food.protein || 0) * multiplier),
+      carbs: Math.round((food.carbs || 0) * multiplier),
+      fat: Math.round((food.fat || 0) * multiplier),
+    };
+    logMealForDate(scaled, date);
+    setQuantityModal(null);
+  }
   function toggleHabit(k) { setDay("habits", { ...habits, [k]: !habits[k] }); }
   function toggleGym(d) { setDay("gymDays", { ...gymDays, [d]: !gymDays[d] }); }
 
@@ -709,8 +742,10 @@ export default function App() {
               <button key={s} style={{ ...S.pill(screen === s), flex: 1 }} onClick={() => { setScreen(s); setAuthErr(""); }}>{lbl}</button>
             ))}
           </div>
-          <span style={S.label}>Full Name</span>
-          <input style={S.input} placeholder="e.g. Manish Karki" value={authForm.name} onChange={e => setAuthForm(p => ({ ...p, name: e.target.value }))} />
+          {isReg && <>
+            <span style={S.label}>Full Name</span>
+            <input style={S.input} placeholder="e.g. Manish Karki" value={authForm.name} onChange={e => setAuthForm(p => ({ ...p, name: e.target.value }))} />
+          </>}
           <span style={S.label}>4-Digit PIN</span>
           <input style={{ ...S.input, letterSpacing: 6, fontWeight: 700 }} type="password" inputMode="numeric" maxLength={4} placeholder="••••" value={authForm.pin} onChange={e => setAuthForm(p => ({ ...p, pin: e.target.value.replace(/\D/g, "").slice(0, 4) }))} />
           {isReg && <>
@@ -719,59 +754,14 @@ export default function App() {
           </>}
           {authErr && <div style={S.err}>⚠️ {authErr}</div>}
           <button style={{ ...S.btn(), marginTop: 16 }} onClick={isReg ? handleRegisterStep1 : handleLogin}>
-            {isReg ? "Continue → Security Setup" : "Sign In"}
+            {isReg ? "Create Account 🎉" : "Sign In with PIN"}
           </button>
         </div>
-        {isReg && (
-          <div style={{ ...S.card, background: C.primaryLight, border: `1px solid #C5C0F5` }}>
-            <div style={{ fontSize: 12, color: C.primary, fontWeight: 700 }}>🔐 Two-Step Security</div>
-            <div style={{ fontSize: 12, color: C.muted, marginTop: 4, lineHeight: 1.5 }}>Sign-in uses your 4-digit PIN + a security question for extra account safety.</div>
-          </div>
-        )}
         {toast && <div style={S.toast}>{toast}</div>}
       </div>
     );
   }
 
-  if (screen === "secQ") return (
-    <div style={S.wrap}>
-      <div style={{ ...S.header, justifyContent: "center", flexDirection: "column", textAlign: "center", padding: "24px 16px", paddingTop: "calc(env(safe-area-inset-top, 0px) + 24px)" }}>
-        <div style={{ fontSize: 34 }}>🔐</div>
-        <div style={{ fontSize: 18, fontWeight: 700 }}>Security Setup</div>
-        <div style={{ fontSize: 12, opacity: 0.8 }}>One-time setup · protects your account</div>
-      </div>
-      <div style={S.card}>
-        <div style={{ fontSize: 13, color: C.muted, marginBottom: 12 }}>You'll be asked this question on future logins.</div>
-        <span style={S.label}>Choose a security question</span>
-        <select style={S.input} value={secQ} onChange={e => setSecQ(+e.target.value)}>
-          {SECURITY_QUESTIONS.map((q, i) => <option key={i} value={i}>{q}</option>)}
-        </select>
-        <span style={S.label}>Your Answer</span>
-        <input style={S.input} placeholder="Case-insensitive" value={secAns} onChange={e => setSecAns(e.target.value)} />
-        {authErr && <div style={S.err}>⚠️ {authErr}</div>}
-        <button style={{ ...S.btn(), marginTop: 14 }} onClick={handleSecQSetup}>Complete Setup 🎉</button>
-      </div>
-      {toast && <div style={S.toast}>{toast}</div>}
-    </div>
-  );
-
-  if (screen === "loginMFA") return (
-    <div style={S.wrap}>
-      <div style={{ ...S.header, justifyContent: "center", flexDirection: "column", textAlign: "center", padding: "24px 16px", paddingTop: "calc(env(safe-area-inset-top, 0px) + 24px)" }}>
-        <div style={{ fontSize: 34 }}>🔐</div>
-        <div style={{ fontSize: 18, fontWeight: 700 }}>Verify It's You</div>
-        <div style={{ fontSize: 12, opacity: 0.8 }}>2-Factor Security</div>
-      </div>
-      <div style={S.card}>
-        <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 10 }}>{SECURITY_QUESTIONS[secQ]}</div>
-        <input style={S.input} placeholder="Your answer" value={secAnsInput} onChange={e => setSecAnsInput(e.target.value)} />
-        {authErr && <div style={S.err}>⚠️ {authErr}</div>}
-        <button style={{ ...S.btn(), marginTop: 14 }} onClick={handleLoginMFA}>Verify & Sign In</button>
-        <button style={{ ...S.btnOut, width: "100%", marginTop: 10, padding: "10px" }} onClick={() => setScreen("login")}>← Back</button>
-      </div>
-      {toast && <div style={S.toast}>{toast}</div>}
-    </div>
-  );
 
   if (screen === "onboarding") return (
     <div style={S.wrap}>
@@ -908,7 +898,7 @@ export default function App() {
 
         <div style={S.card}>
           <div style={{ overflowX: "auto", display: "flex", gap: 6, marginBottom: 12, paddingBottom: 4 }}>
-            {[["breakfast","🌅 Breakfast"],["lunch","🍽️ Lunch"],["snack","🥪 Snack"],["dinner","🌙 Dinner"],["nepali","🇳🇵 Nepali"],["search","🔍 Search"]].map(([t,lbl]) => (
+            {[["breakfast","🌅 Breakfast"],["lunch","🍽️ Lunch"],["snack","🥪 Snack"],["dinner","🌙 Dinner"],["nepali","🇳🇵 Nepali"],["search","🔍 Search"],["custom","✏️ Custom"]].map(([t,lbl]) => (
               <button key={t} style={{ ...S.pill(foodTab===t), flexShrink: 0 }} onClick={() => setFoodTab(t)}>{lbl}</button>
             ))}
           </div>
@@ -919,7 +909,7 @@ export default function App() {
                 <div style={{ fontSize: 13, fontWeight: 500 }}>{f.name}</div>
                 <div style={{ fontSize: 11, color: C.muted }}>{f.cal} kcal · P:{f.protein}g C:{f.carbs}g F:{f.fat}g</div>
               </div>
-              {isDietEditable && <button style={S.btnSm(C.accent)} onClick={() => logMealForDate(f, dietDate)}>+ Log</button>}
+              {isDietEditable && <button style={S.btnSm(C.accent)} onClick={() => openQuantityModal(f, dietDate)}>+ Log</button>}
             </div>
           ))}
 
@@ -936,9 +926,55 @@ export default function App() {
                   <div style={{ fontSize: 13, fontWeight: 500 }}>{f.name}</div>
                   <div style={{ fontSize: 11, color: C.muted }}>{f.cal} kcal/{f.per} · P:{f.protein}g C:{f.carbs}g F:{f.fat}g</div>
                 </div>
-                {isDietEditable && <button style={S.btnSm(C.accent)} onClick={() => logMealForDate(f, dietDate)}>+ Log</button>}
+                {isDietEditable && <button style={S.btnSm(C.accent)} onClick={() => openQuantityModal(f, dietDate)}>+ Log</button>}
               </div>
             ))}
+            {!foodLoading && (
+              <div style={{ marginTop: 12, padding: "10px 12px", background: "#FFF9E6", borderRadius: 10, border: "1px solid #F59E0B" }}>
+                <div style={{ fontSize: 12, color: "#92400E", fontWeight: 600, marginBottom: 4 }}>Can't find it? Use ✏️ Custom tab to add any food manually.</div>
+              </div>
+            )}
+          </>}
+
+          {foodTab === "custom" && <>
+            <div style={{ fontSize: 13, color: C.muted, marginBottom: 12, lineHeight: 1.5 }}>Add any food — great for Nepali dishes, home-cooked meals, or anything not in the database.</div>
+            <span style={S.label}>Food Name *</span>
+            <input style={S.input} placeholder="e.g. Dal Bhat, Sel Roti, Momo..." value={customFood.name} onChange={e => setCustomFood(p => ({ ...p, name: e.target.value }))} />
+            <span style={S.label}>Calories (kcal) *</span>
+            <input style={S.input} type="number" inputMode="numeric" placeholder="e.g. 350" value={customFood.cal} onChange={e => setCustomFood(p => ({ ...p, cal: e.target.value }))} />
+            <div style={{ display: "flex", gap: 8 }}>
+              <div style={{ flex: 1 }}>
+                <span style={S.label}>Protein (g)</span>
+                <input style={S.input} type="number" inputMode="decimal" placeholder="0" value={customFood.protein} onChange={e => setCustomFood(p => ({ ...p, protein: e.target.value }))} />
+              </div>
+              <div style={{ flex: 1 }}>
+                <span style={S.label}>Carbs (g)</span>
+                <input style={S.input} type="number" inputMode="decimal" placeholder="0" value={customFood.carbs} onChange={e => setCustomFood(p => ({ ...p, carbs: e.target.value }))} />
+              </div>
+              <div style={{ flex: 1 }}>
+                <span style={S.label}>Fat (g)</span>
+                <input style={S.input} type="number" inputMode="decimal" placeholder="0" value={customFood.fat} onChange={e => setCustomFood(p => ({ ...p, fat: e.target.value }))} />
+              </div>
+            </div>
+            {isDietEditable && (
+              <button
+                style={{ ...S.btn(C.accent), marginTop: 14 }}
+                onClick={() => {
+                  if (!customFood.name.trim() || !customFood.cal) { showToast("⚠️ Name and calories are required"); return; }
+                  const food = {
+                    name: customFood.name.trim(),
+                    cal: parseInt(customFood.cal) || 0,
+                    protein: parseInt(customFood.protein) || 0,
+                    carbs: parseInt(customFood.carbs) || 0,
+                    fat: parseInt(customFood.fat) || 0,
+                  };
+                  openQuantityModal(food, dietDate);
+                  setCustomFood({ name: "", cal: "", protein: "", carbs: "", fat: "" });
+                }}
+              >
+                Next: Set Quantity →
+              </button>
+            )}
           </>}
         </div>
 
@@ -1162,7 +1198,7 @@ export default function App() {
             <button style={{ ...S.btnSm(C.primary), padding: "5px 10px" }} onClick={() => navigateJournalDate(-1)}>‹ Prev</button>
             <div style={{ textAlign: "center" }}>
               <div style={{ fontSize: 12, fontWeight: 700, color: C.primary }}>📋 {isViewingToday ? "Today's Report" : formatJournalDate(journalDate)}</div>
-              {!isViewingToday && <div style={{ fontSize: 10, color: isJournalEditable ? C.accent : C.warn, fontWeight: 600, marginTop: 2 }}>{isJournalEditable ? "✏️ Editable — within 3 days" : "🔒 Read only — too old to edit"}</div>}
+              {!isViewingToday && <div style={{ fontSize: 10, color: isJournalEditable ? C.accent : C.warn, fontWeight: 600, marginTop: 2 }}>{isJournalEditable ? "✏️ Editable — within 4 days" : "🔒 Read only — too old to edit"}</div>}
             </div>
             <button style={{ ...S.btnSm(isViewingToday ? "#CCC" : C.primary), padding: "5px 10px" }} onClick={() => navigateJournalDate(1)} disabled={isViewingToday}>Next ›</button>
           </div>
@@ -1327,7 +1363,7 @@ export default function App() {
 
         <div style={{ ...S.card, border: `1.5px solid ${C.danger}` }}>
           <div style={{ fontSize: 13, fontWeight: 700, color: C.danger, marginBottom: 6 }}>Sign Out</div>
-          <div style={{ fontSize: 12, color: C.muted, marginBottom: 12 }}>You'll need your name, PIN, and security answer to sign back in.</div>
+          <div style={{ fontSize: 12, color: C.muted, marginBottom: 12 }}>You'll need your 4-digit PIN to sign back in.</div>
           <button style={{ ...S.btn(C.danger) }} onClick={handleSignOut}>Sign Out of My Sadbani</button>
         </div>
       </>}
@@ -1381,6 +1417,43 @@ export default function App() {
           </div>
         </div>
       )}
+
+      {quantityModal && (() => {
+        const f = quantityModal.food;
+        const isPer100g = f.per === "100g";
+        const qty = parseFloat(quantityInput) || 0;
+        const multiplier = isPer100g ? qty / 100 : qty;
+        const previewCal = qty > 0 ? Math.round(f.cal * multiplier) : 0;
+        return (
+          <div style={S.modal} onClick={() => setQuantityModal(null)}>
+            <div style={S.modalCard} onClick={e => e.stopPropagation()}>
+              <div style={{ fontSize: 15, fontWeight: 800, marginBottom: 4 }}>How much did you eat?</div>
+              <div style={{ fontSize: 13, color: C.primary, fontWeight: 600, marginBottom: 2 }}>{f.name}</div>
+              <div style={{ fontSize: 11, color: C.muted, marginBottom: 14 }}>Base: {f.cal} kcal {isPer100g ? "per 100g" : "per serving"}</div>
+              <span style={{ ...S.label, marginTop: 0 }}>{isPer100g ? "Amount (grams)" : "Quantity (servings, e.g. 0.5, 1, 2)"}</span>
+              <input
+                style={S.input}
+                type="number"
+                inputMode="decimal"
+                placeholder={isPer100g ? "e.g. 150" : "e.g. 0.5"}
+                value={quantityInput}
+                onChange={e => setQuantityInput(e.target.value)}
+                autoFocus
+              />
+              {qty > 0 && (
+                <div style={{ marginTop: 10, padding: "10px 12px", background: C.primaryLight, borderRadius: 10, fontSize: 13 }}>
+                  <b style={{ color: C.primary }}>{previewCal} kcal</b>
+                  <span style={{ color: C.muted }}> · P:{Math.round((f.protein || 0) * multiplier)}g C:{Math.round((f.carbs || 0) * multiplier)}g F:{Math.round((f.fat || 0) * multiplier)}g</span>
+                </div>
+              )}
+              <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
+                <button style={{ ...S.btnOut, flex: 1, padding: "10px" }} onClick={() => setQuantityModal(null)}>Cancel</button>
+                <button style={{ ...S.btn(), flex: 2 }} onClick={confirmQuantityLog} disabled={!quantityInput}>Log {qty > 0 ? previewCal + " kcal" : ""} ✓</button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
       {toast && <div style={S.toast}>{toast}</div>}
     </div>
