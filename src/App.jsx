@@ -474,6 +474,11 @@ export default function App() {
     }).catch(console.error);
   }, [exHistDate, user]);
 
+  const canEdit = (date) => {
+    const diff = Math.round((new Date(today + "T12:00:00") - new Date(date + "T12:00:00")) / 86400000);
+    return diff <= 4;
+  };
+
   const isViewingToday = journalDate === today;
   const isJournalEditable = isViewingToday || canEdit(journalDate);
   const journalViewData = isViewingToday ? dailyData : (dailyCache[journalDate] || {});
@@ -498,10 +503,6 @@ export default function App() {
     const d = new Date(exHistDate + "T12:00:00"); d.setDate(d.getDate() + dir);
     const k = d.toISOString().split("T")[0]; if (k <= today) setExHistDate(k);
   }
-  const canEdit = (date) => {
-    const diff = Math.round((new Date(today + "T12:00:00") - new Date(date + "T12:00:00")) / 86400000);
-    return diff <= 4;
-  };
   function savePastDay(date, updated) {
     setDailyCache(p => ({ ...p, [date]: updated }));
     setDoc(doc(db, "daily", `${user.username}_${date}`), updated).catch(console.error);
@@ -1036,7 +1037,7 @@ export default function App() {
           {dietMeals.length > 0 && <div style={{ fontSize: 14, fontWeight: 700, color: C.primary, marginTop: 8 }}>Total: {dietTotalCal} kcal · {dietTotalProtein}g protein</div>}
         </div>
         <div style={{ display: "flex", justifyContent: "flex-end", padding: "4px 12px 8px" }}>
-          <button style={S.btnSm(C.primary)} onClick={() => setTab("exercise")}>व्यायाम →</button>
+          <button style={S.btnSm(C.primary)} onClick={() => setTab("exercise")}>Exercise →</button>
         </div>
       </>}
 
@@ -1075,23 +1076,36 @@ export default function App() {
             ))}
           </div>
 
+          {/* Today's exercise log with date navigation */}
           <div style={S.card}>
-            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 8 }}>🏋️ Gym Tracker — Past 7 Days</div>
-            <div style={{ display: "flex", gap: 5 }}>
-              {[-6, -5, -4, -3, -2, -1, 0].map(off => {
-                const d = new Date(); d.setDate(d.getDate() + off);
-                const dk = d.toISOString().split("T")[0];
-                const dn = d.toLocaleDateString("en-US", { weekday: "short" });
-                const num = d.getDate();
-                return (
-                  <div key={dk} style={{ flex: 1, textAlign: "center" }}>
-                    <div style={{ fontSize: 10, color: C.muted, marginBottom: 4 }}>{dn}</div>
-                    <div onClick={() => toggleGym(dk)} style={{ width: 34, height: 34, borderRadius: 8, border: `2px solid ${gymDays[dk] ? C.accent : "#DDD"}`, background: gymDays[dk] ? C.accent : "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: 12, margin: "0 auto", color: gymDays[dk] ? "#fff" : C.muted, fontWeight: 700 }}>{gymDays[dk] ? "✓" : num}</div>
-                  </div>
-                );
-              })}
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+              <button style={{ ...S.btnSm(C.primary), padding: "5px 10px" }} onClick={() => navigateExHistDate(-1)}>‹ Prev</button>
+              <div style={{ textAlign: "center" }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: C.primary }}>📅 {exHistDate === today ? "Today's Log" : formatJournalDate(exHistDate)}</div>
+                {exHistDate !== today && <div style={{ fontSize: 10, color: canEdit(exHistDate) ? C.accent : C.warn, fontWeight: 600 }}>{canEdit(exHistDate) ? "✏️ Editable" : "🔒 Read only"}</div>}
+              </div>
+              <button style={{ ...S.btnSm(exHistDate === today ? "#CCC" : C.primary), padding: "5px 10px" }} onClick={() => navigateExHistDate(1)} disabled={exHistDate === today}>Next ›</button>
             </div>
-            <div style={{ fontSize: 12, color: C.muted, marginTop: 10 }}>Gym this week: <b style={{ color: C.accent }}>{Object.values(gymDays).filter(Boolean).length} days</b> 💪</div>
+            {exHistDate !== today && <button style={{ ...S.btnSm(C.accent), width: "100%", marginBottom: 10 }} onClick={() => setExHistDate(today)}>Jump to Today</button>}
+            {exHistDayLog.length === 0
+              ? <div style={{ fontSize: 13, color: C.muted, textAlign: "center", padding: 10 }}>{exHistDate === today ? "No exercises logged yet. Pick from the list above." : "No exercises logged on this day."}</div>
+              : exHistDayLog.map((e, i) => (
+                <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "7px 0", borderBottom: "0.5px solid #F0EEF9" }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 13, fontWeight: 600 }}>{e.name}</div>
+                    <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>
+                      {e.weight ? `${e.weight}kg × ${e.reps || "?"} reps${e.setsDone ? ` × ${e.setsDone} sets` : ""}` : "Bodyweight"} · {e.cat} · {e.time}
+                    </div>
+                  </div>
+                  {(exHistDate === today || canEdit(exHistDate)) && <span style={{ color: C.danger, cursor: "pointer", fontSize: 22, lineHeight: 1, padding: "0 8px" }} onClick={() => removeExForDate(i, exHistDate)}>×</span>}
+                </div>
+              ))
+            }
+            {exHistDayLog.length > 0 && (
+              <div style={{ fontSize: 12, color: C.accent, fontWeight: 700, marginTop: 8 }}>
+                {exHistDayLog.length} exercise{exHistDayLog.length > 1 ? "s" : ""} · ~{Math.round(exHistDayLog.reduce((s, e) => s + (e.cal || 0), 0))} kcal burned
+              </div>
+            )}
           </div>
         </>}
 
@@ -1192,33 +1206,38 @@ export default function App() {
             </div>
           )}
 
-          {/* Daily exercise log by date */}
+          {/* 7-day workout streak from actual logs */}
           <div style={S.card}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-              <button style={{ ...S.btnSm(C.primary), padding: "5px 10px" }} onClick={() => navigateExHistDate(-1)}>‹ Prev</button>
-              <div style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: C.primary }}>📅 {exHistDate === today ? "Today" : formatJournalDate(exHistDate)}</div>
-                <div style={{ fontSize: 10, color: C.muted }}>Daily Exercise Log</div>
-              </div>
-              <button style={{ ...S.btnSm(exHistDate === today ? "#CCC" : C.primary), padding: "5px 10px" }} onClick={() => navigateExHistDate(1)} disabled={exHistDate === today}>Next ›</button>
-            </div>
-            {exHistDate !== today && <button style={{ ...S.btnSm(C.accent), width: "100%", marginBottom: 10 }} onClick={() => setExHistDate(today)}>Jump to Today</button>}
-            {exHistDayLog.length === 0
-              ? <div style={{ fontSize: 13, color: C.muted, textAlign: "center", padding: 10 }}>No exercises logged on this day.</div>
-              : exHistDayLog.map((e, i) => (
-                <div key={i} style={{ padding: "7px 0", borderBottom: "0.5px solid #F0EEF9" }}>
-                  <div style={{ fontSize: 13, fontWeight: 600 }}>{e.name}</div>
-                  <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>
-                    {e.weight ? `${e.weight}lbs × ${e.reps || "?"} reps${e.setsDone ? ` × ${e.setsDone} sets` : ""}` : "Bodyweight"} · {e.cat} · {e.time}
+            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 12 }}>🔥 Workout Streak — Past 7 Days</div>
+            <div style={{ display: "flex", gap: 5 }}>
+              {[-6, -5, -4, -3, -2, -1, 0].map(off => {
+                const d = new Date(); d.setDate(d.getDate() + off);
+                const dk = d.toISOString().split("T")[0];
+                const dn = d.toLocaleDateString("en-US", { weekday: "short" });
+                const num = d.getDate();
+                const worked = off === 0
+                  ? exerciseLog.length > 0
+                  : (dailyCache[dk]?.exerciseLog?.length > 0);
+                return (
+                  <div key={dk} style={{ flex: 1, textAlign: "center" }}>
+                    <div style={{ fontSize: 10, color: C.muted, marginBottom: 4 }}>{dn}</div>
+                    <div style={{ width: 34, height: 34, borderRadius: 8, border: `2px solid ${worked ? C.accent : "#DDD"}`, background: worked ? C.accent : "#F5F5F8", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, margin: "0 auto", color: worked ? "#fff" : C.muted, fontWeight: 700 }}>
+                      {worked ? "✓" : num}
+                    </div>
                   </div>
-                </div>
-              ))
-            }
-            {exHistDayLog.length > 0 && (
-              <div style={{ fontSize: 12, color: C.accent, fontWeight: 700, marginTop: 8 }}>
-                {exHistDayLog.length} exercise{exHistDayLog.length > 1 ? "s" : ""} · {Math.round(exHistDayLog.reduce((s, e) => s + (e.cal || 0), 0))} kcal burned
-              </div>
-            )}
+                );
+              })}
+            </div>
+            {(() => {
+              let streak = 0;
+              for (let i = 0; i >= -6; i--) {
+                const d = new Date(); d.setDate(d.getDate() + i);
+                const dk = d.toISOString().split("T")[0];
+                const worked = i === 0 ? exerciseLog.length > 0 : (dailyCache[dk]?.exerciseLog?.length > 0);
+                if (worked) streak++; else break;
+              }
+              return <div style={{ fontSize: 12, color: C.muted, marginTop: 10 }}>Current streak: <b style={{ color: streak > 0 ? C.accent : C.muted }}>{streak} day{streak !== 1 ? "s" : ""}</b> {streak >= 3 ? "🔥" : streak > 0 ? "💪" : ""}</div>;
+            })()}
           </div>
         </>}
         <div style={{ display: "flex", justifyContent: "flex-end", padding: "4px 12px 8px" }}>
